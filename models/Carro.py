@@ -1,4 +1,5 @@
 # models/Carro.py
+#Prueba VS
 class Carro:
     def __init__(self, ancho=50, alto=30, carril=0, salto_altura=40):
         # posición inicial (x fijo a la izquierda, y depende del carril)
@@ -49,4 +50,3 @@ class Carro:
 
     def __repr__(self):
         return f"Carro(carril={self.carril}, x={self.x}, y={self.y}, saltando={self.esta_saltando})"
-

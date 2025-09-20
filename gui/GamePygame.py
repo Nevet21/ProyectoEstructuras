@@ -1,7 +1,7 @@
 import pygame
 from models.Juego import JuegoModel
 
-class GamePygameH:
+class GamePygame:
     def __init__(self, width=800, height=600):
         pygame.init()
         self.WIDTH, self.HEIGHT = width, height
@@ -50,4 +50,3 @@ class GamePygameH:
             self.clock.tick(30)
 
         pygame.quit()
-

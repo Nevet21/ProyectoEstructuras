@@ -1,7 +1,7 @@
-from gui.GamePygame import GamePygameH
+from gui.GamePygame import GamePygame
 
 def main():
-    game = GamePygameH()
+    game = GamePygame()
     game.run()
 
 if __name__ == "__main__":
