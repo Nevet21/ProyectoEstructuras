@@ -1,7 +1,7 @@
-# gui/GamePygame.py
 import pygame
 import os
 import sys
+import json   # 👈 nuevo import
 
 # Agregar path para imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -16,13 +16,30 @@ class GamePygame:
         pygame.display.set_caption("Juego Carretera con Árbol AVL")
         self.clock = pygame.time.Clock()
 
-        # Motor del juego
-        self.juego = JuegoModel()
-        self.juego.agregar_obstaculo(400, carril=2)
-        self.juego.agregar_obstaculo(600, carril=1)
-        self.juego.agregar_obstaculo(800, carril=0)  # Más obstáculos para mejor visualización
+        # 🔹 Cargar configuraciones desde JSON ANTES de instanciar JuegoModel
+        data = self.cargar_json("config.json")
+        config = data.get("configuraciones", {})
 
-        # Cargar imágenes (con fallback si no existen)
+        longitud = config.get("distancia_total", 1000)
+        energia_inicial = config.get("energia_inicial", 100)   # 👈 puedes agregar este campo en el JSON
+        velocidad = config.get("velocidad_avance", 5)
+        intervalo = config.get("tiempo_refresco_ms", 200) / 1000.0  # lo paso a segundos
+
+        # Motor del juego con parámetros del JSON
+        self.juego = JuegoModel(longitud, energia_inicial, velocidad, intervalo)
+
+        # Guardar otros atributos extra en el juego
+        self.juego.altura_salto = config.get("altura_salto", 50)
+        self.juego.color_carrito = config.get("color_carrito", "rojo")
+
+        # 🔹 Cargar obstáculos
+        for obst in data.get("obstaculos", []):
+            x = obst.get("x", 0)
+            carril = obst.get("carril", 0)
+            tipo = obst.get("tipo", "cono")
+            self.juego.agregar_obstaculo(x, carril=carril, tipo=tipo)
+
+        # Cargar imágenes
         self.cargar_imagenes()
         
         # Efecto de movimiento de carretera
@@ -36,6 +53,16 @@ class GamePygame:
         self.mostrar_arbol = False
         self.recorrido_actual = ""
         self.recorrido_lineas = []
+
+    def cargar_json(self, ruta_json):
+        """Carga configuraciones y obstáculos desde un archivo JSON"""
+        try:
+            with open(ruta_json, "r") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"❌ Error cargando {ruta_json}: {e}")
+            return {}
+
 
     def cargar_imagenes(self):
         """Carga imágenes con fallback a formas geométricas"""
