@@ -1,11 +1,10 @@
 # models/Carro.py
-#Prueba VS
 class Carro:
-    def __init__(self, ancho=50, alto=30, carril=0, salto_altura=40):
-        # posición inicial (x fijo a la izquierda, y depende del carril)
-        self.x = 50
+    def __init__(self, ancho=50, alto=30, carril=1, salto_altura=40):
+        self.x = 100  # Posición X inicial
         self.carril = carril
-        self.y = carril * alto
+        self.y = 400 + carril * 60  # Posición Y basada en carril
+        self.velocidad_x = 2  # ✅ VELOCIDAD DE AVANCE
 
         # tamaño del carro
         self.ancho = ancho
@@ -14,17 +13,25 @@ class Carro:
         # salto
         self.esta_saltando = False
         self.salto_altura = salto_altura
-        self.altura_actual = 0  # desplazamiento temporal al saltar
+        self.altura_actual = 0
+
+    def avanzar(self):
+        """✅ EL CARRO SÍ AVANZA EN X - IMPORTANTE"""
+        self.x += self.velocidad_x
 
     def mover_arriba(self):
-        if self.carril < 2:  # suponiendo 3 carriles (0,1,2)
-            self.carril += 1
-            self.y = self.carril * self.alto
-
-    def mover_abajo(self):
         if self.carril > 0:
             self.carril -= 1
-            self.y = self.carril * self.alto
+            self.actualizar_posicion_y()
+
+    def mover_abajo(self):
+        if self.carril < 2:
+            self.carril += 1
+            self.actualizar_posicion_y()
+
+    def actualizar_posicion_y(self):
+        """Actualiza la posición Y basada en el carril"""
+        self.y = 400 + self.carril * 60
 
     def saltar(self):
         if not self.esta_saltando:
@@ -32,21 +39,17 @@ class Carro:
             self.altura_actual = self.salto_altura
 
     def actualizar_salto(self):
-        """Actualiza el estado del salto (sube y baja)."""
+        """Actualiza el estado del salto"""
         if self.esta_saltando:
-            self.altura_actual -= 5  # velocidad de caída
+            self.altura_actual -= 5
             if self.altura_actual <= 0:
                 self.altura_actual = 0
                 self.esta_saltando = False
 
-    def get_rect(self):
-        """Devuelve las coordenadas reales del carro para colisiones"""
-        return (
-            self.x,
-            self.y - self.altura_actual,  # sube con el salto
-            self.ancho,
-            self.alto,
-        )
+    def obtener_rectangulo(self):
+        """Devuelve el rectángulo de colisión"""
+        y_pos = self.y - self.altura_actual
+        return (self.x, y_pos, self.ancho, self.alto)
 
     def __repr__(self):
-        return f"Carro(carril={self.carril}, x={self.x}, y={self.y}, saltando={self.esta_saltando})"
+        return f"Carro(x={self.x}, carril={self.carril}, y={self.y})"

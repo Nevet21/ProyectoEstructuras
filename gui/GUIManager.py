@@ -14,35 +14,62 @@ class GUIManager:
         self.font = pygame.font.SysFont("Arial", 24, bold=True)
 
     def cargar_imagenes(self):
-        """Carga imágenes IDÉNTICO a como estaba antes"""
+        """Carga las imágenes desde assets/"""
         try:
+            # 1. Cargar carro
             self.car_img = pygame.image.load("assets/car.png")
             self.car_img = pygame.transform.scale(self.car_img, (60, 100))
-        except:
-            self.car_img = pygame.Surface((60, 100), pygame.SRCALPHA)
-            pygame.draw.rect(self.car_img, (255, 0, 0), (10, 0, 40, 80))
-            pygame.draw.rect(self.car_img, (200, 0, 0), (0, 80, 60, 20))
-
-        try:
-            self.obst_img = pygame.image.load("assets/obstaculo.png")
-            self.obst_img = pygame.transform.scale(self.obst_img, (60, 100))
-        except:
-            self.obst_img = pygame.Surface((60, 100), pygame.SRCALPHA)
-            pygame.draw.rect(self.obst_img, (0, 100, 255), (0, 0, 60, 100))
-            pygame.draw.rect(self.obst_img, (0, 70, 200), (10, 10, 40, 80))
-
-        try:
+            
+            # 2. Cargar carretera (IMPORTANTE: esta es la que faltaba)
             self.road_img = pygame.image.load("assets/road.png")
             self.road_img = pygame.transform.scale(self.road_img, (self.screen_width, self.screen_height))
-        except:
-            self.road_img = pygame.Surface((self.screen_width, self.screen_height))
-            self.road_img.fill((100, 100, 100))
-            for i in range(0, self.screen_width, 40):
-                pygame.draw.rect(self.road_img, (255, 255, 0), (i, self.screen_height//2 - 5, 20, 10))
+            
+            # 3. Cargar imágenes de obstáculos (SIMPLE)
+            self.obstaculo_imagenes = {
+                "cono": pygame.image.load("assets/cono.png"),
+                "roca": pygame.image.load("assets/roca.png"),
+                "aceite": pygame.image.load("assets/aceite.png"),
+                "hueco": pygame.image.load("assets/hueco.png")
+            }
+            
+            # Escalar todas las imágenes de obstáculos
+            for tipo in self.obstaculo_imagenes:
+                self.obstaculo_imagenes[tipo] = pygame.transform.scale(
+                    self.obstaculo_imagenes[tipo], (60, 100)
+                )
+                
+        except Exception as e:
+            print(f"❌ Error cargando imágenes: {e}")
+            # Si hay error, crear imágenes básicas de emergencia
+            self.crear_imagenes_emergencia()
+
+    def crear_imagenes_emergencia(self):
+        """Solo si falla la carga de imágenes"""
+        # Carro rojo básico
+        self.car_img = pygame.Surface((60, 100))
+        self.car_img.fill((255, 0, 0))
+        
+        # Carretera gris básica
+        self.road_img = pygame.Surface((self.screen_width, self.screen_height))
+        self.road_img.fill((100, 100, 100))
+        
+        # Obstáculos de colores básicos
+        self.obstaculo_imagenes = {
+            "cono": pygame.Surface((60, 100)),    # Amarillo
+            "roca": pygame.Surface((60, 100)),    # Gris
+            "aceite": pygame.Surface((60, 100)),  # Negro  
+            "hueco": pygame.Surface((60, 100))    # Marrón
+        }
+        
+        # Colorear los obstáculos
+        self.obstaculo_imagenes["cono"].fill((255, 255, 0))
+        self.obstaculo_imagenes["roca"].fill((128, 128, 128))
+        self.obstaculo_imagenes["aceite"].fill((0, 0, 0))
+        self.obstaculo_imagenes["hueco"].fill((139, 69, 19))
 
     def dibujar_juego(self, screen, juego):
-        """Dibuja EXACTAMENTE como antes"""
-        # Fondo con movimiento (COPIADO del código anterior)
+        """Dibuja el juego"""
+        # Fondo
         self.road_x -= 5
         if self.road_x <= -self.screen_width:
             self.road_x = 0
@@ -50,21 +77,28 @@ class GUIManager:
         screen.blit(self.road_img, (self.road_x, 0))
         screen.blit(self.road_img, (self.road_x + self.screen_width, 0))
 
-        # Carriles (COPIADO del código anterior)
+        # Carriles
         for i in range(1, 3):
             y_pos = i * 100 + 150
             pygame.draw.line(screen, (255, 255, 0), (0, y_pos), (self.screen_width, y_pos), 2)
 
-        # Carro (COPIADO del código anterior)
-        carro = juego.carro
-        carro_y = 150 + carro.carril * 100 - carro.altura_actual
-        screen.blit(self.car_img, (carro.x, carro_y))
+        # Carro
+        carro_x = self.screen_width // 2 - 30
+        carro_y = 150 + juego.carro.carril * 100 - juego.carro.altura_actual
+        screen.blit(self.car_img, (carro_x, carro_y))
 
-        # Obstáculos (COPIADO del código anterior)
+        # Obstáculos - imagen según tipo
         for obst in juego.obstaculos_visibles:
-            screen.blit(self.obst_img, (obst.x, 150 + obst.carril * 100))
+            x_relativo = obst.x - juego.carro.x
+            x_pantalla = self.screen_width // 2 + x_relativo
+            
+            if -100 < x_relativo < self.screen_width + 100:
+                y_pantalla = 150 + obst.carril * 100
+                # Usar la imagen correcta para cada tipo
+                imagen = self.obstaculo_imagenes.get(obst.tipo, self.obstaculo_imagenes["cono"])
+                screen.blit(imagen, (x_pantalla, y_pantalla))
 
-        # HUD (COPIADO del código anterior)
+        # HUD
         self.dibujar_hud(screen, juego.energia)
 
     def dibujar_hud(self, screen, energia):

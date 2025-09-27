@@ -1,0 +1,46 @@
+{
+  "configuraciones": {
+    "distancia_total": 1000,
+    "velocidad_avance": 5,
+    "altura_salto": 50,
+    "tiempo_refresco_ms": 200,
+    "color_carrito": "rojo"
+  },
+  "obstaculos": [
+    {
+      "x": 300,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 500,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 535,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 700,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 833,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 841,
+      "carril": 1,
+      "tipo": "roca"
+    }
+  ],
+  "metadata": {
+    "fecha_actualizacion": "2025-09-26T22:48:15.600487",
+    "total_obstaculos": 6,
+    "posicion_actual": 312
+  }
+}

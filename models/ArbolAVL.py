@@ -167,3 +167,15 @@ class ArbolAVL:
                 self.imprimir_arbol(nodo.izquierda, nivel + 1, "Izq: ")
             if nodo.derecha is not None:
                 self.imprimir_arbol(nodo.derecha, nivel + 1, "Der: ")
+
+    def obtener_todos_obstaculos(self):
+        """Nuevo método: obtiene todos los obstáculos del árbol"""
+        obstaculos = []
+        self._obtener_todos(self.raiz, obstaculos)
+        return obstaculos
+
+    def _obtener_todos(self, nodo, resultados):
+        if nodo:
+            self._obtener_todos(nodo.izquierda, resultados)
+            resultados.append(nodo.obstaculo)
+            self._obtener_todos(nodo.derecha, resultados)

@@ -1,0 +1,26 @@
+{
+  "configuraciones": {
+    "distancia_total": 1000,
+    "velocidad_avance": 5,
+    "altura_salto": 50,
+    "tiempo_refresco_ms": 200,
+    "color_carrito": "rojo"
+  },
+  "obstaculos": [
+    {
+      "x": 404,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 531,
+      "carril": 2,
+      "tipo": "cono"
+    }
+  ],
+  "metadata": {
+    "fecha_actualizacion": "2025-09-26T22:05:19.119084",
+    "total_obstaculos": 2,
+    "posicion_actual": 100
+  }
+}

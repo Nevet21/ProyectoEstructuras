@@ -1,0 +1,26 @@
+{
+  "configuraciones": {
+    "distancia_total": 1000,
+    "velocidad_avance": 5,
+    "altura_salto": 50,
+    "tiempo_refresco_ms": 200,
+    "color_carrito": "rojo"
+  },
+  "obstaculos": [
+    {
+      "x": 483,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 550,
+      "carril": 2,
+      "tipo": "roca"
+    }
+  ],
+  "metadata": {
+    "fecha_actualizacion": "2025-09-26T22:01:07.069108",
+    "total_obstaculos": 2,
+    "posicion_actual": 100
+  }
+}
