@@ -117,11 +117,6 @@ class GUIManager:
         panel_superior.fill((0, 0, 0, 128))
         screen.blit(panel_superior, (0, 0))
 
-        # Botón (COPIADO)
-        pygame.draw.rect(screen, (70, 130, 180), (10, 10, 180, 35), border_radius=5)
-        texto_boton = self.font.render("🌳 Mostrar Árbol AVL", True, (255, 255, 255))
-        screen.blit(texto_boton, (20, 15))
-
         # Energía (COPIADO)
         energia_texto = self.font.render(f"⚡ {energia}%", True, (255, 255, 255))
         screen.blit(energia_texto, (self.screen_width - 100, 15))
