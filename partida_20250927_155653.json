@@ -1,0 +1,146 @@
+{
+  "configuraciones": {
+    "distancia_total": 1000,
+    "velocidad_avance": 5,
+    "altura_salto": 50,
+    "tiempo_refresco_ms": 200,
+    "color_carrito": "rojo"
+  },
+  "obstaculos": [
+    {
+      "x": 300,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 500,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 700,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 755,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 845,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 1002,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1003,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 1175,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1204,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1237,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 1436,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1465,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1486,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 1682,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1783,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2073,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 2093,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 2131,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2299,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2351,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2461,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2474,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2716,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 2804,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2890,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 3002,
+      "carril": 2,
+      "tipo": "aceite"
+    }
+  ],
+  "metadata": {
+    "fecha_actualizacion": "2025-09-27T15:57:32.853778",
+    "total_obstaculos": 26,
+    "posicion_actual": 2356
+  }
+}

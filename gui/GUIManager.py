@@ -20,6 +20,10 @@ class GUIManager:
             self.car_img = pygame.image.load("assets/car.png")
             self.car_img = pygame.transform.scale(self.car_img, (60, 100))
             
+            #2. cargar carro2
+            self.car2_img = pygame.image.load("assets/car2.png")
+            self.car2_img = pygame.transform.scale(self.car2_img, (60, 100))
+            
             # 2. Cargar carretera (IMPORTANTE: esta es la que faltaba)
             self.road_img = pygame.image.load("assets/road.png")
             self.road_img = pygame.transform.scale(self.road_img, (self.screen_width, self.screen_height))
@@ -85,7 +89,12 @@ class GUIManager:
         # Carro
         carro_x = self.screen_width // 2 - 30
         carro_y = 150 + juego.carro.carril * 100 - juego.carro.altura_actual
-        screen.blit(self.car_img, (carro_x, carro_y))
+        
+        if juego.carro.esta_saltando == False:
+            screen.blit(self.car_img, (carro_x, carro_y))
+        else:
+            screen.blit(self.car2_img, (carro_x, carro_y))
+        
 
         # Obstáculos - imagen según tipo
         for obst in juego.obstaculos_visibles:

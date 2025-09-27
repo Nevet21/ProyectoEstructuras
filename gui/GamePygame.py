@@ -104,7 +104,16 @@ class GamePygame:
                 elif event.key == pygame.K_d:
                     print(f"🔍 Carro: X={self.juego.carro.x}, Carril={self.juego.carro.carril}")
                     print(f"🔍 Energía: {self.juego.energia}%, Obstáculos: {len(self.juego.carretera.obstaculos)}")
+                
+                # ✅ Controles de movimiento con KEYDOWN
+                elif event.key == pygame.K_UP:
+                    self.juego.carro.mover_arriba()
+                elif event.key == pygame.K_DOWN:
+                    self.juego.carro.mover_abajo()
+                elif event.key == pygame.K_SPACE:
+                    self.juego.carro.saltar()
 
+            # ✅ Manejo de árbol si está activo
             if self.mostrar_arbol:
                 resultado = self.gui_arbol.manejar_eventos_arbol(event, self.juego.arbol_obstaculos)
                 if resultado == "volver":
@@ -114,19 +123,11 @@ class GamePygame:
                 if resultado == "mostrar_arbol":
                     self.mostrar_arbol = True
 
+
     def actualizar_juego(self):
         """Actualización - SIN movimiento de obstáculos"""
         if self.mostrar_arbol or self.juego.terminado:
             return
-
-        # ✅ Controles del carro
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP]: 
-            self.juego.carro.mover_arriba()
-        if keys[pygame.K_DOWN]: 
-            self.juego.carro.mover_abajo()
-        if keys[pygame.K_SPACE]: 
-            self.juego.carro.saltar()
 
         # ✅ SOLO EL CARRO SE MUEVE
         self.juego.carro.avanzar()
