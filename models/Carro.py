@@ -1,7 +1,7 @@
 # models/Carro.py
 class Carro:
     def __init__(self, ancho=50, alto=30, carril=1, salto_altura=40):
-        self.x = 100  # Posición X inicial
+        self.x = 0  # ✅ CAMBIAR de 100 a 0 - Empieza al inicio
         self.carril = carril
         self.y = 400 + carril * 60  # Posición Y basada en carril
         self.velocidad_x = 2  # ✅ VELOCIDAD DE AVANCE

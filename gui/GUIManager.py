@@ -72,8 +72,8 @@ class GUIManager:
         self.obstaculo_imagenes["hueco"].fill((139, 69, 19))
 
     def dibujar_juego(self, screen, juego):
-        """Dibuja el juego"""
-        # Fondo
+        """Dibuja el juego con obstáculos que entran suavemente desde la derecha"""
+        # Fondo (scroll)
         self.road_x -= 5
         if self.road_x <= -self.screen_width:
             self.road_x = 0
@@ -86,26 +86,30 @@ class GUIManager:
             y_pos = i * 100 + 150
             pygame.draw.line(screen, (255, 255, 0), (0, y_pos), (self.screen_width, y_pos), 2)
 
-        # Carro
-        carro_x = self.screen_width // 2 - 30
+        # Carro (posición fija en el lado izquierdo)
+        carro_x = 100
         carro_y = 150 + juego.carro.carril * 100 - juego.carro.altura_actual
         
         if juego.carro.esta_saltando == False:
             screen.blit(self.car_img, (carro_x, carro_y))
         else:
             screen.blit(self.car2_img, (carro_x, carro_y))
-        
 
-        # Obstáculos - imagen según tipo
+        # ✅ OBSTÁCULOS: Que entren suavemente desde la derecha
         for obst in juego.obstaculos_visibles:
-            x_relativo = obst.x - juego.carro.x
-            x_pantalla = self.screen_width // 2 + x_relativo
+            # Calcular distancia relativa al carro
+            distancia_relativa = obst.x - juego.carro.x
             
-            if -100 < x_relativo < self.screen_width + 100:
+            # ✅ MOSTRAR obstáculos que estén dentro del rango visible
+            # Desde -100px (un poco antes de entrar) hasta el ancho de pantalla
+            if -100 <= distancia_relativa < self.screen_width + 100:
+                x_pantalla = 100 + distancia_relativa  # Carro en x=100 de la pantalla
                 y_pantalla = 150 + obst.carril * 100
-                # Usar la imagen correcta para cada tipo
-                imagen = self.obstaculo_imagenes.get(obst.tipo, self.obstaculo_imagenes["cono"])
-                screen.blit(imagen, (x_pantalla, y_pantalla))
+                
+                # ✅ Solo dibujar si está dentro o cerca de la pantalla
+                if -50 <= x_pantalla <= self.screen_width + 50:
+                    imagen = self.obstaculo_imagenes.get(obst.tipo, self.obstaculo_imagenes["cono"])
+                    screen.blit(imagen, (x_pantalla, y_pantalla))
 
         # HUD
         self.dibujar_hud(screen, juego.energia)
