@@ -6,37 +6,41 @@ class ArbolLayoutManager:
         self.screen_width = screen_width
         self.screen_height = screen_height
         
-        # ✅ ESPACIADO MÁS COMPACTO para aprovechar espacio
-        self.nivel_altura = 60  # Más compacto
-        self.espacio_base = 100  # Más compacto
+        # Espaciado
+        self.nivel_altura = 60
+        self.espacio_base = 100
         self.zoom_manual = 1.0
         self.zoom_auto = 1.0
+        
+        # ✅ NUEVO: Sistema de zoom direccional
         self.offset_x = 0
         self.offset_y = 0
         self.arrastrando = False
         self.ultimo_mouse_pos = (0, 0)
         self.ultimo_ancho_arbol = 0
         
-        # ✅ EMPEZAR MÁS ABAJO para no tocar el título
-        self.y_inicio = 70  # Coincide con GUIArbolAVL
+        # ✅ NUEVO: Punto de ancla para zoom direccional
+        self.zoom_anchor_x = 0
+        self.zoom_anchor_y = 0
         
-        self.font_nodo = pygame.font.SysFont("Arial", 12, bold=True)  # Más compacto
-        self.font_altura = pygame.font.SysFont("Arial", 10)  # Más compacto
+        # Posición inicial
+        self.y_inicio = 70
+        
+        self.font_nodo = pygame.font.SysFont("Arial", 12, bold=True)
+        self.font_altura = pygame.font.SysFont("Arial", 10)
 
     def calcular_zoom_automatico(self, ancho_arbol):
         """Zoom automático simple basado en el ancho"""
         if ancho_arbol == 0:
             return 1.0
         
-        # Margen para dejar espacio a los lados
         margen = 200
         zoom_calculado = (self.screen_width - margen) / ancho_arbol
         
-        # Suavizar transición
         if self.ultimo_ancho_arbol > 0:
             zoom_calculado = (zoom_calculado * 0.3 + self.zoom_auto * 0.7)
         
-        return max(0.4, min(zoom_calculado, 1.2))  # Límites razonables
+        return max(0.4, min(zoom_calculado, 1.2))
 
     def calcular_altura_arbol(self, nodo):
         """Calcula la altura total del árbol"""
@@ -46,39 +50,27 @@ class ArbolLayoutManager:
                       self.calcular_altura_arbol(nodo.derecha))
 
     def calcular_layout(self, nodo, nivel=0, x_min=0, x_max=None):
-        """LAYOUT COMPLETO CORREGIDO - Empieza desde y_inicio"""
+        """Layout del árbol"""
         if x_max is None:
             x_max = self.screen_width
             
         if not nodo:
             return None, 0
         
-        # ✅ CORRECCIÓN: Usar self.y_inicio correctamente
         inicio_vertical = self.y_inicio
-        
-        # Reducción de espacio por nivel
         espacio = int(self.espacio_base * (0.6 ** min(nivel, 3)))
         
-        # Calcular subárbol izquierdo
         izquierda, ancho_izq = self.calcular_layout(nodo.izquierda, nivel + 1, x_min, x_max)
-        
-        # Posición actual del nodo
         x_actual = x_min + ancho_izq + espacio
-        
-        # Calcular subárbol derecho
         derecha, ancho_der = self.calcular_layout(nodo.derecha, nivel + 1, x_actual + espacio, x_max)
-        
-        # Calcular ancho total
         ancho_total = ancho_izq + ancho_der + espacio * 2
         
-        # Actualizar zoom automático si es la raíz
         if nivel == 0 and ancho_total != self.ultimo_ancho_arbol:
             self.zoom_auto = self.calcular_zoom_automatico(ancho_total)
             self.ultimo_ancho_arbol = ancho_total
         
-        # ✅ CORRECCIÓN DEFINITIVA: Usar inicio_vertical + nivel_altura
         nodo.x_dibujo = x_actual
-        nodo.y_dibujo = inicio_vertical + nivel * self.nivel_altura  # ← Aquí estaba el error
+        nodo.y_dibujo = inicio_vertical + nivel * self.nivel_altura
         nodo.ancho_subarbol = ancho_total
         
         return nodo, ancho_total
@@ -87,17 +79,14 @@ class ArbolLayoutManager:
         return self.zoom_auto * self.zoom_manual
 
     def aplicar_zoom_y_desplazamiento(self, nodo):
-        """Aplicación de zoom con centrado simple"""
+        """Aplicación de zoom y desplazamiento"""
         if not nodo:
             return
             
         zoom_total = self.obtener_zoom_total()
         
-        # Centrado simple si no estamos arrastrando
-        if not self.arrastrando and self.offset_x == 0:
-            if hasattr(nodo, 'ancho_subarbol'):
-                ancho_zoom = nodo.ancho_subarbol * zoom_total
-                self.offset_x = (self.screen_width - ancho_zoom) / 2 / max(zoom_total, 0.1)
+        # ✅ ELIMINADO: Centrado automático cuando se arrastra
+        # El zoom direccional maneja el centrado
         
         nodo.x_final = (nodo.x_dibujo + self.offset_x) * zoom_total
         nodo.y_final = (nodo.y_dibujo + self.offset_y) * zoom_total
@@ -106,12 +95,12 @@ class ArbolLayoutManager:
         self.aplicar_zoom_y_desplazamiento(nodo.derecha)
 
     def manejar_eventos_zoom(self, event):
-        """Manejo de eventos de zoom"""
+        """✅ ZOOM DIRECCIONAL MEJORADO: Zoom hacia el punto del mouse"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:  # Zoom in
-                self.zoom_manual = min(self.zoom_manual * 1.2, 3.0)
+                self.zoom_direccional(event.pos, 1.2)
             elif event.button == 5:  # Zoom out
-                self.zoom_manual = max(self.zoom_manual / 1.2, 0.3)
+                self.zoom_direccional(event.pos, 1/1.2)
             elif event.button == 1:  # Arrastrar
                 self.arrastrando = True
                 self.ultimo_mouse_pos = event.pos
@@ -125,6 +114,8 @@ class ArbolLayoutManager:
                 dx = event.pos[0] - self.ultimo_mouse_pos[0]
                 dy = event.pos[1] - self.ultimo_mouse_pos[1]
                 zoom_total = self.obtener_zoom_total()
+                
+                # ✅ ARRASTRE SUAVE: Mover la vista
                 self.offset_x += dx / max(zoom_total, 0.1)
                 self.offset_y += dy / max(zoom_total, 0.1)
                 self.ultimo_mouse_pos = event.pos
@@ -136,14 +127,41 @@ class ArbolLayoutManager:
                 self.offset_y = 0
                 self.arrastrando = False
 
+    def zoom_direccional(self, mouse_pos, factor_zoom):
+        """✅ ZOOM DIRECCIONAL: Zoom hacia el punto del mouse"""
+        zoom_anterior = self.zoom_manual
+        
+        # Aplicar nuevo zoom
+        if factor_zoom > 1:  # Zoom in
+            self.zoom_manual = min(self.zoom_manual * factor_zoom, 5.0)  # ✅ Mayor límite máximo
+        else:  # Zoom out
+            self.zoom_manual = max(self.zoom_manual * factor_zoom, 0.2)  # ✅ Menor límite mínimo
+        
+        # Si el zoom cambió, ajustar el offset para zoom direccional
+        if self.zoom_manual != zoom_anterior:
+            zoom_total_anterior = self.zoom_auto * zoom_anterior
+            zoom_total_nuevo = self.obtener_zoom_total()
+            
+            # ✅ CALCULAR OFFSET PARA ZOOM DIRECCIONAL
+            # Convertir coordenadas del mouse a coordenadas del árbol
+            mouse_x_arbol = (mouse_pos[0] / zoom_total_anterior) - self.offset_x
+            mouse_y_arbol = (mouse_pos[1] / zoom_total_anterior) - self.offset_y
+            
+            # Ajustar offset para que el punto bajo el mouse permanezca en la misma posición
+            self.offset_x = (mouse_pos[0] / zoom_total_nuevo) - mouse_x_arbol
+            self.offset_y = (mouse_pos[1] / zoom_total_nuevo) - mouse_y_arbol
+
     def dibujar_nodo(self, screen, nodo):
-        """Dibuja nodos mostrando ambas coordenadas (x,y)"""
+        """Dibuja nodos"""
         if not nodo or not hasattr(nodo, 'x_final'):
             return
             
         x, y = int(nodo.x_final), int(nodo.y_final)
         
-        # Estilo original
+        # Solo dibujar si está dentro de la pantalla (optimización)
+        if not (-50 <= x <= self.screen_width + 50 and -50 <= y <= self.screen_height + 50):
+            return
+        
         radio = 20
         color_nodo = (0, 150, 200) if getattr(nodo, 'es_raiz', False) else (200, 100, 50)
         
@@ -151,30 +169,48 @@ class ArbolLayoutManager:
         pygame.draw.circle(screen, color_nodo, (x, y), radio)
         pygame.draw.circle(screen, (255, 255, 255), (x, y), radio, 1)
         
-        # **MOSTRAR AMBAS COORDENADAS (x,y)**
         texto_coords = self.font_altura.render(f"({nodo.x},{nodo.y})", True, (255, 255, 255))
         texto_rect = texto_coords.get_rect(center=(x, y))
         screen.blit(texto_coords, texto_rect)
         
-        # Altura del nodo
         altura_text = self.font_altura.render(f"h:{nodo.altura}", True, (200, 200, 200))
         screen.blit(altura_text, (x - 12, y + radio + 5))
 
     def dibujar_conexiones(self, screen, nodo):
-        """Dibuja líneas entre nodos"""
+        """Dibuja líneas entre nodos (optimizado)"""
         if not nodo or not hasattr(nodo, 'x_final'):
             return
             
-        grosor = 2  # Grosor original
+        grosor = max(1, int(2 * min(self.zoom_manual, 2)))  # ✅ Grosor adaptativo al zoom
         
         if nodo.izquierda and hasattr(nodo.izquierda, 'x_final'):
             x1, y1 = int(nodo.x_final), int(nodo.y_final)
             x2, y2 = int(nodo.izquierda.x_final), int(nodo.izquierda.y_final)
-            pygame.draw.line(screen, (100, 200, 100), (x1, y1 + 10), (x2, y2 - 10), grosor)
-            self.dibujar_conexiones(screen, nodo.izquierda)
+            
+            # ✅ Solo dibujar si al menos un extremo está visible
+            if (self.es_punto_visible(x1, y1) or self.es_punto_visible(x2, y2)):
+                pygame.draw.line(screen, (100, 200, 100), (x1, y1 + 10), (x2, y2 - 10), grosor)
+                self.dibujar_conexiones(screen, nodo.izquierda)
             
         if nodo.derecha and hasattr(nodo.derecha, 'x_final'):
             x1, y1 = int(nodo.x_final), int(nodo.y_final)
             x2, y2 = int(nodo.derecha.x_final), int(nodo.derecha.y_final)
-            pygame.draw.line(screen, (100, 200, 100), (x1, y1 + 10), (x2, y2 - 10), grosor)
-            self.dibujar_conexiones(screen, nodo.derecha)
+            
+            if (self.es_punto_visible(x1, y1) or self.es_punto_visible(x2, y2)):
+                pygame.draw.line(screen, (100, 200, 100), (x1, y1 + 10), (x2, y2 - 10), grosor)
+                self.dibujar_conexiones(screen, nodo.derecha)
+
+    def es_punto_visible(self, x, y):
+        """✅ OPTIMIZACIÓN: Verifica si un punto está visible en pantalla"""
+        return (-100 <= x <= self.screen_width + 100 and 
+                -100 <= y <= self.screen_height + 100)
+
+    def obtener_vista_actual(self):
+        """✅ NUEVO: Devuelve información de la vista actual"""
+        return {
+            'zoom': self.obtener_zoom_total(),
+            'offset_x': self.offset_x,
+            'offset_y': self.offset_y,
+            'zoom_manual': self.zoom_manual,
+            'zoom_auto': self.zoom_auto
+        }
