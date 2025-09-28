@@ -9,6 +9,8 @@ class NodoAVL:
         self.izquierda = None
         self.derecha = None
         self.altura = 1
+        
+        
 
     def __str__(self):
         return f"Nodo({self.x},{self.y})"

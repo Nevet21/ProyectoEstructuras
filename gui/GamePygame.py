@@ -192,6 +192,25 @@ class GamePygame:
                     self.juego.carro.mover_abajo()
                 elif event.key == pygame.K_SPACE:
                     self.juego.carro.saltar()
+                                # ---- Recorridos del árbol: I, P, O (se reenviarán al layout manager) ----
+                elif event.key in (pygame.K_i, pygame.K_p, pygame.K_o, pygame.K_b):
+                    # Tomamos la raíz de forma segura
+                    with self.arbol_lock:
+                        arbol = getattr(self.juego, "arbol_obstaculos", None)
+                        raiz = getattr(arbol, "raiz", None) if arbol is not None else None
+
+                        if raiz:
+                            if event.key == pygame.K_i:
+                                self.layout_manager.iniciar_recorrido("inorden", raiz)
+                            elif event.key == pygame.K_p:
+                                self.layout_manager.iniciar_recorrido("preorden", raiz)
+                            elif event.key == pygame.K_o:
+                                self.layout_manager.iniciar_recorrido("postorden", raiz)
+                            elif event.key == pygame.K_b:
+                                self.layout_manager.iniciar_recorrido("anchura", raiz)                            
+                        else:
+                            print("ℹ️ No hay raíz del árbol para recorrer.")
+
 
             # Eventos del mouse / interacción: decidir si se envía al panel del árbol
             if event.type in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION):
@@ -274,21 +293,26 @@ class GamePygame:
             restart_rect = restart_text.get_rect(center=(self.GAME_WIDTH//2, self.HEIGHT//2 + 50))
             self.screen.blit(restart_text, restart_rect)
 
-    # ------------------ Loop principal ------------------
+# ------------------ Loop principal ------------------
     def run(self):
         print("🎮 Juego iniciado - Controles:")
         print("🎮 Flechas: Moverse, ESPACIO: Saltar")
         print("🎮 R: Reiniciar, G: Generar obstáculos, D: Debug info")
+        print("🎮 I: Inorden, P: Preorden, O: Postorden")
         print("🎮 ESC: Volver al juego")
 
         try:
             while self.running:
                 self.manejar_eventos()
                 self.actualizar_juego()
+
+                # 🔹 Aquí llamamos a la actualización del recorrido
+                self.layout_manager.actualizar_recorrido()
+
                 self.dibujar()
 
                 pygame.display.flip()
-                self.clock.tick(30)
+                self.clock.tick(30)  # FPS
         finally:
             # limpieza (si quieres esperar que la cola termine)
             self.running = False
@@ -297,6 +321,7 @@ class GamePygame:
             except Exception:
                 pass
             pygame.quit()
+
 
 if __name__ == "__main__":
     juego = GamePygame()

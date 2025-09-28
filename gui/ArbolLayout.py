@@ -16,9 +16,79 @@ class ArbolLayoutManager:
         self.arrastrando = False
         self.ultimo_mouse_pos = (0, 0)
         self.ultimo_ancho_arbol = 0
+        self.recorrido_actual = []
+        self.indice_recorrido = 0
+        self.tiempo_ultimo = 0
+        self.intervalo_ms = 500  # medio segundo entre nodos
         
         self.font_nodo = pygame.font.SysFont("Arial", 16, bold=True)
         self.font_altura = pygame.font.SysFont("Arial", 12)
+        
+    def recorrido_inorden(self, nodo):
+        if not nodo:
+            return []
+        return self.recorrido_inorden(nodo.izquierda) + [nodo] + self.recorrido_inorden(nodo.derecha)
+
+    def recorrido_preorden(self, nodo):
+        if not nodo:
+            return []
+        return [nodo] + self.recorrido_preorden(nodo.izquierda) + self.recorrido_preorden(nodo.derecha)
+
+    def recorrido_postorden(self, nodo):
+        if not nodo:
+            return []
+        return self.recorrido_postorden(nodo.izquierda) + self.recorrido_postorden(nodo.derecha) + [nodo]
+
+    def recorrido_anchura(self, nodo):
+        if not nodo:
+            return []
+
+        resultado = []
+        cola = [nodo]  # inicializamos la cola con la raíz
+
+        while cola:
+            actual = cola.pop(0)
+            resultado.append(actual)
+
+            if actual.izquierda:
+                cola.append(actual.izquierda)
+            if actual.derecha:
+                cola.append(actual.derecha)
+
+        return resultado
+
+
+    def iniciar_recorrido(self, tipo, raiz):
+        """Inicia un recorrido paso a paso"""
+        if tipo == "inorden":
+            self.recorrido_actual = self.recorrido_inorden(raiz)
+        elif tipo == "preorden":
+            self.recorrido_actual = self.recorrido_preorden(raiz)
+        elif tipo == "postorden":
+            self.recorrido_actual = self.recorrido_postorden(raiz)
+        elif tipo == "anchura":
+            self.recorrido_actual = self.recorrido_anchura(raiz)
+
+        self.indice_recorrido = 0
+        self.tiempo_ultimo = pygame.time.get_ticks()
+        self.intervalo_ms = 700  # cada 0.7 segundos
+
+        # resetear colores a negro
+        for nodo in self.recorrido_actual:
+            nodo.color_recorrido = (0, 0, 0)
+
+    def actualizar_recorrido(self):
+        """Avanza un paso en el recorrido si toca por tiempo"""
+        if not hasattr(self, "recorrido_actual") or not self.recorrido_actual:
+            return
+
+        ahora = pygame.time.get_ticks()
+        if self.indice_recorrido < len(self.recorrido_actual) and (ahora - self.tiempo_ultimo > self.intervalo_ms):
+            nodo = self.recorrido_actual[self.indice_recorrido]
+            nodo.color_recorrido = (0, 100, 255)  # Azul
+            self.indice_recorrido += 1
+            self.tiempo_ultimo = ahora
+
 
     def calcular_zoom_automatico(self, ancho_arbol):
         """Zoom automático simple basado en el ancho"""
@@ -42,7 +112,9 @@ class ArbolLayoutManager:
                       self.calcular_altura_arbol(nodo.derecha))
 
     def calcular_layout(self, nodo, nivel=0, x_min=0, x_max=None):
-        """LAYOUT ORIGINAL - como al principio"""
+        if nivel == 0:
+            self.raiz = nodo  # ✅ Guardamos la raíz del árbol
+
         if x_max is None:
             x_max = self.screen_width
             
@@ -98,7 +170,7 @@ class ArbolLayoutManager:
         self.aplicar_zoom_y_desplazamiento(nodo.derecha)
 
     def manejar_eventos_zoom(self, event):
-        """Manejo ORIGINAL de eventos"""
+        """Manejo ORIGINAL de eventos + teclas de recorridos"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:  # Zoom in
                 self.zoom_manual = min(self.zoom_manual * 1.2, 3.0)
@@ -128,28 +200,41 @@ class ArbolLayoutManager:
                 self.offset_y = 0
                 self.arrastrando = False
 
+            # ==== NUEVAS TECLAS ====
+            elif event.key == pygame.K_i:  # Inorden
+                if hasattr(self, "raiz"):
+                    self.iniciar_recorrido("inorden", self.raiz)
+
+            elif event.key == pygame.K_p:  # Preorden
+                if hasattr(self, "raiz"):
+                    self.iniciar_recorrido("preorden", self.raiz)
+
+            elif event.key == pygame.K_o:  # Postorden
+                if hasattr(self, "raiz"):
+                    self.iniciar_recorrido("postorden", self.raiz)
+
+
     def dibujar_nodo(self, screen, nodo):
-        """DIBUJO ORIGINAL de nodos"""
         if not nodo or not hasattr(nodo, 'x_final'):
             return
-            
+
         x, y = int(nodo.x_final), int(nodo.y_final)
-        
-        # **ESTILO ORIGINAL**
         radio = 20
-        color_nodo = (0, 150, 200) if getattr(nodo, 'es_raiz', False) else (200, 100, 50)
-        
+
+        # usar color de recorrido si existe
+        color_nodo = getattr(nodo, 'color_recorrido', (0, 0, 0))
+
         pygame.draw.circle(screen, (20, 20, 40), (x + 2, y + 2), radio + 1)
         pygame.draw.circle(screen, color_nodo, (x, y), radio)
         pygame.draw.circle(screen, (255, 255, 255), (x, y), radio, 1)
-        
-        # Texto original
-        texto = self.font_nodo.render(f"{nodo.x}", True, (255, 255, 255))
+
+        texto = self.font_nodo.render(str(nodo.x), True, (255, 255, 255))
         texto_rect = texto.get_rect(center=(x, y))
         screen.blit(texto, texto_rect)
-        
+
         altura_text = self.font_altura.render(f"h:{nodo.altura}", True, (200, 200, 200))
         screen.blit(altura_text, (x - 10, y + radio + 2))
+
 
     def dibujar_conexiones(self, screen, nodo):
         """CONEXIONES ORIGINALES"""
