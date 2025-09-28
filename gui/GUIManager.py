@@ -74,9 +74,10 @@ class GUIManager:
     def dibujar_juego(self, screen, juego):
         """Dibuja el juego"""
         # Fondo
-        self.road_x -= 5
-        if self.road_x <= -self.screen_width:
-            self.road_x = 0
+        if juego.en_ejecucion:   # ✅ Solo mover si el juego está activo
+            self.road_x -= 5
+            if self.road_x <= -self.screen_width:
+                self.road_x = 0
 
         screen.blit(self.road_img, (self.road_x, 0))
         screen.blit(self.road_img, (self.road_x + self.screen_width, 0))

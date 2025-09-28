@@ -184,6 +184,15 @@ class JuegoModel:
             print(f"🚗 Carro AVANZA: X={self.carro.x}")
             if self.carretera.obstaculos:
                 print(f"📍 Obstáculo más cercano: X={self.carretera.obstaculos[0].x}")
+                
+                
+    def toggle_pausa(self):
+        """Alterna entre pausa y reanudación"""
+        if self.terminado:
+            return
+        self.en_ejecucion = not self.en_ejecucion
+        estado = "⏸️ Pausa" if not self.en_ejecucion else "▶️ Reanudar"
+        print(f"{estado}")
 
     def reiniciar(self):
         """Reinicia el juego"""
@@ -205,6 +214,7 @@ class GameThread(threading.Thread):
         self.screen_width = screen_width
 
     def run(self):
-        while not self.juego.terminado and self.juego.en_ejecucion:
-            self.juego.update(self.screen_width)
+        while not self.juego.terminado:
+            if self.juego.en_ejecucion:   # ✅ solo actualiza si está corriendo
+                self.juego.update(self.screen_width)
             time.sleep(self.juego.intervalo)

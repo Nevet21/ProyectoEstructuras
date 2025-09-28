@@ -172,7 +172,7 @@ class GamePygame:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    # Si quieres ocultar/mostrar algo, lo manejas aquí
+                    self.juego.toggle_pausa()
                     pass
                 elif event.key == pygame.K_r:  # Reiniciar juego
                     self.juego.reiniciar()
@@ -231,8 +231,8 @@ class GamePygame:
     # ------------------ Actualización por frame ------------------
     def actualizar_juego(self):
         """Actualización - SIN bloquear dibujo del árbol"""
-        if self.juego.terminado:
-            return
+        if not self.juego.en_ejecucion or self.juego.terminado:
+            return  
 
         # Solo el carro se mueve
         self.juego.carro.avanzar()
