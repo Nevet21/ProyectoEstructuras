@@ -296,6 +296,9 @@ class GamePygame:
                 self.tree_queue.put(("stop", None))
             except Exception:
                 pass
+            
+        if hasattr(self.juego, 'guardar_partida_actual'):
+            self.juego.guardar_partida_actual()
             pygame.quit()
 
 if __name__ == "__main__":

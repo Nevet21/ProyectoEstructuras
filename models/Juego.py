@@ -8,7 +8,7 @@ from models.ArbolAVL import ArbolAVL
 
 class JuegoModel:
     def __init__(self, longitud, energia_inicial, velocidad, intervalo, config_json):
-        self.carro = Carro()
+        self.carro = Carro(velocidad=velocidad)
         self.carretera = Carretera(longitud)
         self.energia = energia_inicial
         self.energia_maxima = energia_inicial
@@ -148,7 +148,7 @@ class JuegoModel:
     def verificar_colisiones(self):
         """Verifica colisiones"""
         for obst in self.obstaculos_visibles:
-            if obst.colisiona_con(self.carro):
+            if obst.carril == self.carro.carril and obst.colisiona_con(self.carro):
                 if not getattr(obst, 'ya_colisionado', False):
                     self.energia -= obst.dano
                     obst.ya_colisionado = True

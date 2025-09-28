@@ -39,7 +39,7 @@ class GUIManager:
             # Escalar todas las imágenes de obstáculos
             for tipo in self.obstaculo_imagenes:
                 self.obstaculo_imagenes[tipo] = pygame.transform.scale(
-                    self.obstaculo_imagenes[tipo], (60, 100)
+                    self.obstaculo_imagenes[tipo], (30, 50)
                 )
                 
         except Exception as e:

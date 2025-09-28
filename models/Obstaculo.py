@@ -4,8 +4,8 @@ class Obstaculo:
         self.carril = carril
         self.tipo = tipo
         self.dano = dano
-        self.ancho = 40
-        self.alto = 40
+        self.ancho = 20
+        self.alto = 20
         self.ya_colisionado = False
 
     def mover(self, velocidad):

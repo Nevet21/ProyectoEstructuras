@@ -1,10 +1,15 @@
 # models/Carro.py
+# models/Carro.py
 class Carro:
-    def __init__(self, ancho=50, alto=30, carril=1, salto_altura=40):
-        self.x = 100  # Posición X inicial
+    def __init__(self, ancho=50, alto=30, carril=1, salto_altura=100, velocidad=10):
+        self.x = 0  # Posición X inicial
         self.carril = carril
-        self.y = 400 + carril * 60  # Posición Y basada en carril
-        self.velocidad_x = 2  # ✅ VELOCIDAD DE AVANCE
+
+        # La Y real se calcula a partir del carril (0, 1, 2) → posición en pixeles
+        self.y = 400 + carril * 60
+
+        # ✅ velocidad se pasa desde el JSON (por medio de JuegoModel)
+        self.velocidad_x = velocidad
 
         # tamaño del carro
         self.ancho = ancho
@@ -16,8 +21,9 @@ class Carro:
         self.altura_actual = 0
 
     def avanzar(self):
-        """✅ EL CARRO SÍ AVANZA EN X - IMPORTANTE"""
+        """Mover el carro en el eje X según su velocidad"""
         self.x += self.velocidad_x
+
 
     def mover_arriba(self):
         if self.carril > 0:
