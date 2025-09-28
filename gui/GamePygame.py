@@ -12,6 +12,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from models.Juego import JuegoModel
 from gui.GUIArbolAVL import GUIArbolAVL
 from gui.GUIManager import GUIManager
+from gui.ArbolLayout import ArbolLayoutManager
 
 class GamePygame:
     def __init__(self, width=1000, height=600):
@@ -35,6 +36,7 @@ class GamePygame:
         # Inicializar GUI (pasando tamaños de panel relevantes)
         self.gui_manager = GUIManager(self.GAME_WIDTH, self.HEIGHT)
         self.gui_arbol = GUIArbolAVL(self.TREE_WIDTH, self.HEIGHT)
+        self.layout_manager = ArbolLayoutManager(self.TREE_WIDTH, self.HEIGHT)
 
         # Estado del juego
         self.running = True
@@ -144,7 +146,10 @@ class GamePygame:
                 # Encolar inserción al AVL en el thread del árbol (usa x_pos o un id)
                 # El valor que insertes depende de cómo identifiques nodos en tu AVL.
                 # Aquí insertamos x_pos como ejemplo.
-                self.tree_queue.put(("insertar", x_pos))
+                obstaculo_obj = self.juego.agregar_obstaculo(x_pos, carril, tipo)
+                if obstaculo_obj:
+                    # Enviar todos los parámetros que necesita ArbolAVL.insertar()
+                    self.tree_queue.put(("insertar", x_pos, carril, tipo, obstaculo_obj.dano, obstaculo_obj))
 
             self.ultima_generacion_x = self.juego.carro.x + 200  # Siguiente en 200px
 
