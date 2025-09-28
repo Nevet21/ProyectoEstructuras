@@ -1,0 +1,166 @@
+{
+  "configuraciones": {
+    "distancia_total": 1000,
+    "velocidad_avance": 10,
+    "altura_salto": 50,
+    "tiempo_refresco_ms": 200,
+    "color_carrito": "rojo"
+  },
+  "obstaculos": [
+    {
+      "x": 400,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 650,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 846,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 900,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1023,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 1089,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 1183,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1334,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1337,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1503,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 1528,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 1632,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1725,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1888,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1964,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2203,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2250,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2295,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 2419,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2528,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2648,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2741,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2902,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2957,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 3034,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 3197,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 3241,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 3272,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3539,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3641,
+      "carril": 1,
+      "tipo": "hueco"
+    }
+  ],
+  "metadata": {
+    "fecha_actualizacion": "2025-09-27T23:51:40.912024",
+    "total_obstaculos": 30,
+    "posicion_actual": 2600
+  }
+}

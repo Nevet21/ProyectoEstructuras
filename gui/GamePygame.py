@@ -77,40 +77,51 @@ class GamePygame:
     # --------------- Worker del árbol (thread) ---------------
     def _arbol_worker(self):
         """
-        Hilo que procesa pedidos de actualización del árbol - CORREGIDO
+        Hilo que procesa pedidos de actualización del árbol.
+        Recibe mensajes desde self.tree_queue en forma de tuplas:
+          ("insertar", value) -> insertar en el AVL
+          ("rebuild_from_list", lista) -> reconstruir/actualizar árbol (ejemplo)
+          ("stop", None) -> parar (no necesario si daemon)
         """
         while self.running:
             try:
+                # Espera por una tarea (timeout para permitir chequear self.running)
                 tarea = self.tree_queue.get(timeout=0.5)
             except queue.Empty:
+                # Aquí podrías hacer mantenimiento periódico si lo deseas
                 continue
 
             if tarea is None:
                 continue
 
-            accion, *payload = tarea
+            accion, payload = tarea
 
             try:
                 if accion == "insertar":
-                    # ✅ CORRECCIÓN: Verificar que tenemos los parámetros correctos
-                    if len(payload) == 5:
-                        x, y, tipo, dano, obstaculo_obj = payload
-                        if obstaculo_obj is not None:  # ✅ Verificar que el objeto no sea None
-                            with self.arbol_lock:
-                                self.juego.arbol_obstaculos.insertar(x, y, tipo, dano, obstaculo_obj)
-                            print(f"🌳 [thread] Insertado en AVL: ({x},{y}) - {tipo}")
-                        else:
-                            print(f"❌ [thread] Objeto obstáculo es None")
-                    else:
-                        print(f"❌ [thread] Parámetros incorrectos para insertar. Esperados 5, obtenidos {len(payload)}: {payload}")
+                    # Protegemos al modificar el árbol
+                    with self.arbol_lock:
+                        # asumimos que juego.arbol_obstaculos tiene método insertar
+                        self.juego.arbol_obstaculos.insertar(payload)
+                    # debug
+                    print(f"🌳 [thread] Insertado en AVL: {payload}")
 
                 elif accion == "rebuild_from_list":
-                    # ... (código existente)
-                    pass
+                    # reconstruir o actualizar con una lista de valores (ejemplo)
+                    with self.arbol_lock:
+                        # el método exacto depende de tu implementación del AVL
+                        # Aquí solo damos una idea: vaciar y volver a insertar
+                        try:
+                            self.juego.arbol_obstaculos.clear()  # si existe
+                        except Exception:
+                            pass
+                        for v in payload:
+                            self.juego.arbol_obstaculos.insertar(v)
+                    print("🌳 [thread] Árbol reconstruido desde lista")
 
                 elif accion == "stop":
                     break
 
+                # marca la tarea como hecha
                 self.tree_queue.task_done()
 
             except Exception as e:
@@ -118,10 +129,9 @@ class GamePygame:
 
     # ------------------ Generación obstáculos ------------------
     def generar_obstaculos_dinamicos(self):
-        """Genera obstáculos dinámicamente - ajustado para x=0"""
-        # ✅ AJUSTAR: El carro ahora empieza en x=0
+        """Genera obstáculos dinámicamente - versión simplificada"""
         if self.juego.carro.x >= self.ultima_generacion_x:
-            x_min = self.juego.carro.x + 300  # ✅ Desde x=0 + 300
+            x_min = self.juego.carro.x + 300
             x_max = x_min + 400
 
             print(f"🎮 GENERANDO desde GamePygame: {x_min}-{x_max}")
@@ -131,12 +141,17 @@ class GamePygame:
                 carril = random.randint(0, 2)
                 tipo = random.choice(["cono", "roca", "aceite", "hueco"])
                 x_pos = random.randint(x_min, x_max)
-                
+                obst = self.juego.agregar_obstaculo(x_pos, carril, tipo)
+
+                # Encolar inserción al AVL en el thread del árbol (usa x_pos o un id)
+                # El valor que insertes depende de cómo identifiques nodos en tu AVL.
+                # Aquí insertamos x_pos como ejemplo.
                 obstaculo_obj = self.juego.agregar_obstaculo(x_pos, carril, tipo)
-                if obstaculo_obj and hasattr(obstaculo_obj, 'dano'):
+                if obstaculo_obj:
+                    # Enviar todos los parámetros que necesita ArbolAVL.insertar()
                     self.tree_queue.put(("insertar", x_pos, carril, tipo, obstaculo_obj.dano, obstaculo_obj))
 
-            self.ultima_generacion_x = self.juego.carro.x + 200
+            self.ultima_generacion_x = self.juego.carro.x + 200  # Siguiente en 200px
 
     def verificar_obstaculos_estaticos(self):
         """Verifica que los obstáculos NO se muevan"""
@@ -179,32 +194,24 @@ class GamePygame:
                     self.juego.carro.saltar()
 
             # Eventos del mouse / interacción: decidir si se envía al panel del árbol
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION):
                 mouse_x, mouse_y = event.pos
                 if mouse_x > self.GAME_WIDTH:
-                    # Evento para panel árbol
+                    # Evento para panel árbol -> proteger el acceso al árbol mientras se maneja
                     with self.arbol_lock:
                         resultado = self.gui_arbol.manejar_eventos_arbol(event, self.juego.arbol_obstaculos)
-                    
-                    # ✅ CORRECCIÓN: Si se hizo clic en un botón de recorrido
-                    if resultado is None and hasattr(event, 'pos'):
-                        # Verificar si fue clic en botones de recorrido
-                        x_relativo = event.pos[0] - self.GAME_WIDTH  # Ajustar coordenada X
-                        y_relativo = event.pos[1]
-                        
-                        # Re-crear el evento con coordenadas relativas al panel del árbol
-                        evento_relativo = pygame.event.Event(event.type, {
-                            'pos': (x_relativo, y_relativo),
-                            'button': event.button
-                        })
-                        
-                        # Manejar el evento con coordenadas correctas
-                        with self.arbol_lock:
-                            resultado = self.gui_arbol.manejar_eventos_arbol(evento_relativo, self.juego.arbol_obstaculos)
+                    # si tu gui_arbol devuelve "rebuild" o algo, lo puedes encolar:
+                    if resultado == "rebuild":
+                        # ejemplo: reconstruir árbol a partir de lista de obstáculos
+                        lista = [o.x for o in self.juego.carretera.obstaculos]
+                        self.tree_queue.put(("rebuild_from_list", lista))
+                else:
+                    # Evento para la UI del juego
+                    self.gui_manager.manejar_eventos_juego(event)
 
     # ------------------ Actualización por frame ------------------
     def actualizar_juego(self):
-        """Actualización - pasar screen_width al juego"""
+        """Actualización - SIN bloquear dibujo del árbol"""
         if self.juego.terminado:
             return
 
@@ -212,8 +219,11 @@ class GamePygame:
         self.juego.carro.avanzar()
         self.juego.carro.actualizar_salto()
 
-        # ✅ Generar obstáculos (pasar el ancho del juego)
-        self.juego.generar_obstaculos_dinamicos(self.GAME_WIDTH)
+        # Generar obstáculos (esto encola inserciones al árbol)
+        self.generar_obstaculos_dinamicos()
+
+        # (Opcional) verificar que los obstáculos no se muevan
+        self.verificar_obstaculos_estaticos()
 
         # Actualizar visibilidad y colisiones
         x_min = max(0, self.juego.carro.x - 100)
@@ -221,14 +231,18 @@ class GamePygame:
         self.juego.actualizar_obstaculos_visibles(x_min, x_max)
         self.juego.verificar_colisiones()
 
-        # Debug
-        if pygame.time.get_ticks() % 2000 < 30:
-            print("=== VERIFICACIÓN ===")
-            print(f"🚗 Carro X: {self.juego.carro.x}")
+        # Nota: no esperes la cola del árbol aquí. El thread la procesa.
+        # Si necesitas resultados del thread, podrías usar otra queue de retorno.
+
+        # Debug de movimiento (opcional)
+        if pygame.time.get_ticks() % 1000 < 30:
+            print("=== VERIFICACIÓN MOVIMIENTO ===")
+            print(f"🚗 Carro X: {self.juego.carro.x} (debe AUMENTAR)")
             if self.juego.carretera.obstaculos:
                 obst = self.juego.carretera.obstaculos[0]
-                print(f"📍 Obstáculo más cercano X: {obst.x}")
-                print(f"📏 Distancia: {obst.x - self.juego.carro.x}px")
+                print(f"📍 Obstáculo X: {obst.x} (debe ser FIJO)")
+                if obst.x < 500:
+                    print(f"❌ ¡ERROR! Obstáculo se movió a {obst.x}")
 
     # ------------------ Dibujo ------------------
     def dibujar(self):
@@ -282,9 +296,6 @@ class GamePygame:
                 self.tree_queue.put(("stop", None))
             except Exception:
                 pass
-            
-        if hasattr(self.juego, 'guardar_partida_actual'):
-            self.juego.guardar_partida_actual()
             pygame.quit()
 
 if __name__ == "__main__":
