@@ -95,12 +95,12 @@ class ArbolLayoutManager:
         self.aplicar_zoom_y_desplazamiento(nodo.derecha)
 
     def manejar_eventos_zoom(self, event):
-        """✅ ZOOM DIRECCIONAL MEJORADO: Zoom hacia el punto del mouse"""
+        """✅ ZOOM MUY SUAVE - SENSIBILIDAD MUY REDUCIDA"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:  # Zoom in
-                self.zoom_direccional(event.pos, 1.2)
+                self.zoom_direccional(event.pos, 1.05)  # ✅ MUY SUAVE
             elif event.button == 5:  # Zoom out
-                self.zoom_direccional(event.pos, 1/1.2)
+                self.zoom_direccional(event.pos, 1/1.05)  # ✅ MUY SUAVE
             elif event.button == 1:  # Arrastrar
                 self.arrastrando = True
                 self.ultimo_mouse_pos = event.pos
@@ -115,9 +115,10 @@ class ArbolLayoutManager:
                 dy = event.pos[1] - self.ultimo_mouse_pos[1]
                 zoom_total = self.obtener_zoom_total()
                 
-                # ✅ ARRASTRE SUAVE: Mover la vista
-                self.offset_x += dx / max(zoom_total, 0.1)
-                self.offset_y += dy / max(zoom_total, 0.1)
+                # ✅ ARRASTRE MUY SUAVE
+                sensibilidad_arrastre = 0.6  # ✅ Más suave aún
+                self.offset_x += (dx / max(zoom_total, 0.1)) * sensibilidad_arrastre
+                self.offset_y += (dy / max(zoom_total, 0.1)) * sensibilidad_arrastre
                 self.ultimo_mouse_pos = event.pos
 
         elif event.type == pygame.KEYDOWN:
@@ -126,30 +127,30 @@ class ArbolLayoutManager:
                 self.offset_x = 0
                 self.offset_y = 0
                 self.arrastrando = False
+                print("🔄 Vista reseteada")
 
     def zoom_direccional(self, mouse_pos, factor_zoom):
-        """✅ ZOOM DIRECCIONAL: Zoom hacia el punto del mouse"""
+        """✅ ZOOM EXTRA SUAVE"""
         zoom_anterior = self.zoom_manual
         
-        # Aplicar nuevo zoom
+        # ✅ ZOOM MUY GRADUAL
         if factor_zoom > 1:  # Zoom in
-            self.zoom_manual = min(self.zoom_manual * factor_zoom, 5.0)  # ✅ Mayor límite máximo
+            self.zoom_manual = min(self.zoom_manual * factor_zoom, 3.0)  # ✅ Límite más bajo
         else:  # Zoom out
-            self.zoom_manual = max(self.zoom_manual * factor_zoom, 0.2)  # ✅ Menor límite mínimo
+            self.zoom_manual = max(self.zoom_manual * factor_zoom, 0.4)  # ✅ Límite más alto
         
-        # Si el zoom cambió, ajustar el offset para zoom direccional
         if self.zoom_manual != zoom_anterior:
             zoom_total_anterior = self.zoom_auto * zoom_anterior
             zoom_total_nuevo = self.obtener_zoom_total()
             
-            # ✅ CALCULAR OFFSET PARA ZOOM DIRECCIONAL
-            # Convertir coordenadas del mouse a coordenadas del árbol
             mouse_x_arbol = (mouse_pos[0] / zoom_total_anterior) - self.offset_x
             mouse_y_arbol = (mouse_pos[1] / zoom_total_anterior) - self.offset_y
             
-            # Ajustar offset para que el punto bajo el mouse permanezca en la misma posición
             self.offset_x = (mouse_pos[0] / zoom_total_nuevo) - mouse_x_arbol
             self.offset_y = (mouse_pos[1] / zoom_total_nuevo) - mouse_y_arbol
+            
+            # ✅ FEEDBACK VISUAL MÁS DETALLADO
+            print(f"🔍 Zoom total: {zoom_total_nuevo:.2f}x | Manual: {self.zoom_manual:.2f}x | Auto: {self.zoom_auto:.2f}x")
 
     def dibujar_nodo(self, screen, nodo):
         """Dibuja nodos"""
