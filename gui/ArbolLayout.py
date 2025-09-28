@@ -17,8 +17,9 @@ class ArbolLayoutManager:
         self.ultimo_mouse_pos = (0, 0)
         self.ultimo_ancho_arbol = 0
         
-        self.font_nodo = pygame.font.SysFont("Arial", 16, bold=True)
-        self.font_altura = pygame.font.SysFont("Arial", 12)
+        # **MODIFICACIÓN: Fuentes más pequeñas**
+        self.font_nodo = pygame.font.SysFont("Arial", 9, bold=True)  # Reducido de 16 a 12
+        self.font_altura = pygame.font.SysFont("Arial", 8)  # Reducido de 12 a 10
 
     def calcular_zoom_automatico(self, ancho_arbol):
         """Zoom automático simple basado en el ancho"""
@@ -42,12 +43,18 @@ class ArbolLayoutManager:
                       self.calcular_altura_arbol(nodo.derecha))
 
     def calcular_layout(self, nodo, nivel=0, x_min=0, x_max=None):
-        """LAYOUT ORIGINAL - como al principio"""
+        """LAYOUT ORIGINAL - marcando la raíz"""
         if x_max is None:
             x_max = self.screen_width
             
         if not nodo:
             return None, 0
+        
+        # Marcar si es la raíz
+        if nivel == 0:
+            nodo.es_raiz = True
+        else:
+            nodo.es_raiz = False
         
         # **VOLVEMOS AL CÁLCULO ORIGINAL**
         espacio = int(self.espacio_base * (0.6 ** min(nivel, 3)))  # Reducción por nivel
@@ -129,7 +136,7 @@ class ArbolLayoutManager:
                 self.arrastrando = False
 
     def dibujar_nodo(self, screen, nodo):
-        """DIBUJO ORIGINAL de nodos"""
+        """DIBUJO ORIGINAL de nodos - CON FUENTES MÁS PEQUEÑAS"""
         if not nodo or not hasattr(nodo, 'x_final'):
             return
             
@@ -143,13 +150,15 @@ class ArbolLayoutManager:
         pygame.draw.circle(screen, color_nodo, (x, y), radio)
         pygame.draw.circle(screen, (255, 255, 255), (x, y), radio, 1)
         
-        # Texto original
-        texto = self.font_nodo.render(f"{nodo.x}", True, (255, 255, 255))
-        texto_rect = texto.get_rect(center=(x, y))
-        screen.blit(texto, texto_rect)
+        # **Coordenadas con fuente más pequeña**
+        texto_coordenadas = self.font_nodo.render(f"({nodo.x},{nodo.y})", True, (255, 255, 255))
+        texto_rect = texto_coordenadas.get_rect(center=(x, y))
+        screen.blit(texto_coordenadas, texto_rect)
         
-        altura_text = self.font_altura.render(f"h:{nodo.altura}", True, (200, 200, 200))
-        screen.blit(altura_text, (x - 10, y + radio + 2))
+        # **Tipo de obstáculo con fuente más pequeña**
+        tipo_text = self.font_altura.render(f"{nodo.tipo}", True, (200, 200, 200))
+        tipo_rect = tipo_text.get_rect(center=(x, y + radio + 8))
+        screen.blit(tipo_text, tipo_rect)
 
     def dibujar_conexiones(self, screen, nodo):
         """CONEXIONES ORIGINALES"""
