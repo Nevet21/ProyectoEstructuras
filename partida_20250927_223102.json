@@ -1,0 +1,601 @@
+{
+  "configuraciones": {
+    "distancia_total": 1000,
+    "velocidad_avance": 10,
+    "altura_salto": 50,
+    "tiempo_refresco_ms": 200,
+    "color_carrito": "rojo"
+  },
+  "obstaculos": [
+    {
+      "x": 400,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 650,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 799,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 838,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 900,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 1084,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 1127,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 1285,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1449,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 1515,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 1673,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 1713,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1773,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 1925,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 1937,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2128,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 2165,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2169,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 2406,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 2421,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 2495,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 2654,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2712,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 2746,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2812,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 2876,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3094,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3156,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3158,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3435,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 3552,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3601,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 3650,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3808,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 3908,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 4001,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 4131,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 4335,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 4337,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 4510,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 4545,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 4694,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 4710,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 4870,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 4886,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 4903,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 5041,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 5071,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 5199,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 5403,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 5440,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 5522,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 5716,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 5723,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 5905,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 6005,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 6037,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 6231,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 6316,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 6373,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 6462,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 6596,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 6617,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 6663,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 6849,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 6874,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 6954,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 7068,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 7173,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 7186,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 7348,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 7411,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 7480,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 7588,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 7746,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 7829,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 7967,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 8162,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 8174,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 8197,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 8376,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 8582,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 8619,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 8793,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 8887,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 8892,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 9006,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 9047,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 9299,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 9314,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 9524,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 9599,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 9702,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 9777,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 9787,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 9904,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 10007,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 10296,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 10296,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 10316,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 10557,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 10565,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 10587,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 10768,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 10959,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 11078,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 11093,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 11161,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 11338,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 11343,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 11409,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 11567,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 11582,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 11801,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 11825,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 11880,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 12081,
+      "carril": 0,
+      "tipo": "hueco"
+    }
+  ],
+  "metadata": {
+    "fecha_actualizacion": "2025-09-27T22:32:58.524658",
+    "total_obstaculos": 117,
+    "posicion_actual": 11090
+  }
+}

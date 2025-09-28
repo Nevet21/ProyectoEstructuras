@@ -6,9 +6,9 @@ class ArbolLayoutManager:
         self.screen_width = screen_width
         self.screen_height = screen_height
         
-        # VOLVEMOS al espaciado original que funcionaba
-        self.nivel_altura = 80  # Original
-        self.espacio_base = 150  # Original  
+        # ✅ ESPACIADO MÁS COMPACTO para aprovechar espacio
+        self.nivel_altura = 60  # Más compacto
+        self.espacio_base = 100  # Más compacto
         self.zoom_manual = 1.0
         self.zoom_auto = 1.0
         self.offset_x = 0
@@ -17,8 +17,11 @@ class ArbolLayoutManager:
         self.ultimo_mouse_pos = (0, 0)
         self.ultimo_ancho_arbol = 0
         
-        self.font_nodo = pygame.font.SysFont("Arial", 16, bold=True)
-        self.font_altura = pygame.font.SysFont("Arial", 12)
+        # ✅ EMPEZAR MÁS ABAJO para no tocar el título
+        self.y_inicio = 70  # Coincide con GUIArbolAVL
+        
+        self.font_nodo = pygame.font.SysFont("Arial", 12, bold=True)  # Más compacto
+        self.font_altura = pygame.font.SysFont("Arial", 10)  # Más compacto
 
     def calcular_zoom_automatico(self, ancho_arbol):
         """Zoom automático simple basado en el ancho"""
@@ -36,31 +39,36 @@ class ArbolLayoutManager:
         return max(0.4, min(zoom_calculado, 1.2))  # Límites razonables
 
     def calcular_altura_arbol(self, nodo):
+        """Calcula la altura total del árbol"""
         if not nodo:
             return 0
         return 1 + max(self.calcular_altura_arbol(nodo.izquierda), 
                       self.calcular_altura_arbol(nodo.derecha))
 
     def calcular_layout(self, nodo, nivel=0, x_min=0, x_max=None):
-        """LAYOUT ORIGINAL - como al principio"""
+        """LAYOUT COMPLETO CORREGIDO - Empieza desde y_inicio"""
         if x_max is None:
             x_max = self.screen_width
             
         if not nodo:
             return None, 0
         
-        # **VOLVEMOS AL CÁLCULO ORIGINAL**
-        espacio = int(self.espacio_base * (0.6 ** min(nivel, 3)))  # Reducción por nivel
+        # ✅ CORRECCIÓN: Usar self.y_inicio correctamente
+        inicio_vertical = self.y_inicio
         
-        # Subárbol izquierdo
+        # Reducción de espacio por nivel
+        espacio = int(self.espacio_base * (0.6 ** min(nivel, 3)))
+        
+        # Calcular subárbol izquierdo
         izquierda, ancho_izq = self.calcular_layout(nodo.izquierda, nivel + 1, x_min, x_max)
         
-        # Posición actual
+        # Posición actual del nodo
         x_actual = x_min + ancho_izq + espacio
         
-        # Subárbol derecho
+        # Calcular subárbol derecho
         derecha, ancho_der = self.calcular_layout(nodo.derecha, nivel + 1, x_actual + espacio, x_max)
         
+        # Calcular ancho total
         ancho_total = ancho_izq + ancho_der + espacio * 2
         
         # Actualizar zoom automático si es la raíz
@@ -68,9 +76,9 @@ class ArbolLayoutManager:
             self.zoom_auto = self.calcular_zoom_automatico(ancho_total)
             self.ultimo_ancho_arbol = ancho_total
         
-        # **POSICIÓN ORIGINAL - empezando desde arriba**
+        # ✅ CORRECCIÓN DEFINITIVA: Usar inicio_vertical + nivel_altura
         nodo.x_dibujo = x_actual
-        nodo.y_dibujo = 100 + nivel * self.nivel_altura  # Original: desde arriba
+        nodo.y_dibujo = inicio_vertical + nivel * self.nivel_altura  # ← Aquí estaba el error
         nodo.ancho_subarbol = ancho_total
         
         return nodo, ancho_total
@@ -79,13 +87,13 @@ class ArbolLayoutManager:
         return self.zoom_auto * self.zoom_manual
 
     def aplicar_zoom_y_desplazamiento(self, nodo):
-        """Aplicación ORIGINAL de zoom"""
+        """Aplicación de zoom con centrado simple"""
         if not nodo:
             return
             
         zoom_total = self.obtener_zoom_total()
         
-        # **CENTRADO ORIGINAL - simple**
+        # Centrado simple si no estamos arrastrando
         if not self.arrastrando and self.offset_x == 0:
             if hasattr(nodo, 'ancho_subarbol'):
                 ancho_zoom = nodo.ancho_subarbol * zoom_total
@@ -98,7 +106,7 @@ class ArbolLayoutManager:
         self.aplicar_zoom_y_desplazamiento(nodo.derecha)
 
     def manejar_eventos_zoom(self, event):
-        """Manejo ORIGINAL de eventos"""
+        """Manejo de eventos de zoom"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:  # Zoom in
                 self.zoom_manual = min(self.zoom_manual * 1.2, 3.0)
@@ -129,13 +137,13 @@ class ArbolLayoutManager:
                 self.arrastrando = False
 
     def dibujar_nodo(self, screen, nodo):
-        """DIBUJO ORIGINAL de nodos"""
+        """Dibuja nodos mostrando ambas coordenadas (x,y)"""
         if not nodo or not hasattr(nodo, 'x_final'):
             return
             
         x, y = int(nodo.x_final), int(nodo.y_final)
         
-        # **ESTILO ORIGINAL**
+        # Estilo original
         radio = 20
         color_nodo = (0, 150, 200) if getattr(nodo, 'es_raiz', False) else (200, 100, 50)
         
@@ -143,25 +151,25 @@ class ArbolLayoutManager:
         pygame.draw.circle(screen, color_nodo, (x, y), radio)
         pygame.draw.circle(screen, (255, 255, 255), (x, y), radio, 1)
         
-        # Texto original
-        texto = self.font_nodo.render(f"{nodo.x}", True, (255, 255, 255))
-        texto_rect = texto.get_rect(center=(x, y))
-        screen.blit(texto, texto_rect)
+        # **MOSTRAR AMBAS COORDENADAS (x,y)**
+        texto_coords = self.font_altura.render(f"({nodo.x},{nodo.y})", True, (255, 255, 255))
+        texto_rect = texto_coords.get_rect(center=(x, y))
+        screen.blit(texto_coords, texto_rect)
         
+        # Altura del nodo
         altura_text = self.font_altura.render(f"h:{nodo.altura}", True, (200, 200, 200))
-        screen.blit(altura_text, (x - 10, y + radio + 2))
+        screen.blit(altura_text, (x - 12, y + radio + 5))
 
     def dibujar_conexiones(self, screen, nodo):
-        """CONEXIONES ORIGINALES"""
+        """Dibuja líneas entre nodos"""
         if not nodo or not hasattr(nodo, 'x_final'):
             return
             
-        grosor = 2  # Original
+        grosor = 2  # Grosor original
         
         if nodo.izquierda and hasattr(nodo.izquierda, 'x_final'):
             x1, y1 = int(nodo.x_final), int(nodo.y_final)
             x2, y2 = int(nodo.izquierda.x_final), int(nodo.izquierda.y_final)
-            # **LÍNEA ORIGINAL**
             pygame.draw.line(screen, (100, 200, 100), (x1, y1 + 10), (x2, y2 - 10), grosor)
             self.dibujar_conexiones(screen, nodo.izquierda)
             

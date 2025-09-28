@@ -36,66 +36,64 @@ class JuegoModel:
         self.generar_obstaculos_iniciales(obstaculos_config)
 
     def generar_obstaculos_iniciales(self, obstaculos_config):
-        """Genera obstáculos iniciales desde JSON y algunos extra"""
-        # Obstáculos del JSON
+        """Genera obstáculos iniciales - QUE ESTÉN FUERA DE PANTALLA INICIAL"""
+        # Obstáculos del JSON (ajustar posiciones si son muy cercanas)
         for obst_data in obstaculos_config:
             try:
                 x = obst_data.get("x", 0)
+                # ✅ Si x es menor a 300, ajustarlo para que no esté muy cerca del inicio
+                if x < 300:
+                    x = 300 + random.randint(0, 200)
                 carril = obst_data.get("carril", 0)
                 tipo = obst_data.get("tipo", "cono")
                 self.agregar_obstaculo(x, carril, tipo)
             except Exception as e:
                 print(f"❌ Error cargando obstáculo del JSON: {e}")
         
-        # ✅ Generar obstáculos adicionales si hay pocos
+        # ✅ Generar obstáculos adicionales FUERA de la pantalla inicial
         if len(self.carretera.obstaculos) < 3:
             for i in range(3):
-                x = 300 + (i * 200)
+                x = 400 + (i * 250)  # ✅ Empezar en x=400 (fuera de pantalla inicial)
                 carril = random.randint(0, 2)
                 tipo = random.choice(["cono", "roca", "aceite", "hueco"])
                 self.agregar_obstaculo(x, carril, tipo)
 
-    def generar_obstaculos_dinamicos(self):
-        """Genera obstáculos dinámicamente con distribución inteligente"""
-        if self.carro.x <= self.ultima_generacion_x:
-            return  # Esperar a que el carro avance más
+    def generar_obstaculos_dinamicos(self, screen_width=800):
+        """Genera obstáculos dinámicamente - EQUILIBRADO"""
+        # ✅ GENERACIÓN MÁS ESPACIADA
+        if self.carro.x >= self.ultima_generacion_x - 200:  # ✅ Más espaciado
+            # ✅ Obstáculos a distancia razonable
+            x_min = self.carro.x + screen_width - 100  # ✅ Distancia equilibrada
+            x_max = x_min + 400  # ✅ Rango más amplio para dispersión
             
-        x_min = self.carro.x + 400  # Más distancia para reaccionar
-        x_max = x_min + 600  # Rango más amplio
-        
-        print(f"🎯 GENERANDO entre X={x_min} y X={x_max}")
-        
-        # ✅ DISTRIBUCIÓN INTELIGENTE - máximo 2 obstáculos por grupo
-        num_obstaculos = random.randint(1, 3)  # Reducir cantidad
-        obstaculos_generados = 0
-        
-        # ✅ EVITAR MUCHOS OBSTÁCULOS EN LA MISMA ZONA
-        carriles_disponibles = [0, 1, 2]
-        random.shuffle(carriles_disponibles)  # Mezclar carriles
-        
-        for i in range(min(num_obstaculos, 3)):  # Máximo 3 obstáculos
-            if not carriles_disponibles:
-                break
+            print(f"🎯 GENERANDO EQUILIBRADO: {x_min}-{x_max} (Carro en X={self.carro.x})")
+            
+            # ✅ CANTIDAD EQUILIBRADA de obstáculos
+            num_obstaculos = random.randint(1, 2)  # ✅ Máximo 3, mínimo 1
+            obstaculos_generados = 0
+            
+            carriles_disponibles = [0, 1, 2]
+            random.shuffle(carriles_disponibles)
+            
+            # ✅ PATRÓN MÁS JUSTO - no llenar todos los carriles
+            for i in range(min(num_obstaculos, 1)):  # ✅ Máximo 2 obstáculos por generación
+                if carriles_disponibles:
+                    carril = carriles_disponibles.pop()
+                else:
+                    break  # ✅ No forzar más obstáculos si no hay carriles
+                    
+                tipo = random.choice(["cono", "roca", "aceite", "hueco"])
                 
-            carril = carriles_disponibles.pop()  # Tomar carril disponible
-            tipo = random.choice(["cono", "roca", "aceite", "hueco"])
+                # ✅ Obstáculos más dispersos
+                x_pos = random.randint(x_min, x_max)
+                
+                if self.agregar_obstaculo(x_pos, carril, tipo):
+                    obstaculos_generados += 1
+                    print(f"✅ Generado {tipo} en carril {carril}, x={x_pos}")
             
-            # ✅ DISTRIBUIR EN X - no todos en la misma posición
-            if i == 0:
-                x_pos = random.randint(x_min, x_min + 200)  # Primer obstáculo cerca
-            elif i == 1:
-                x_pos = random.randint(x_min + 200, x_min + 400)  # Segundo más lejos
-            else:
-                x_pos = random.randint(x_min + 400, x_max)  # Tercero más lejos aún
-            
-            if self.agregar_obstaculo(x_pos, carril, tipo):
-                obstaculos_generados += 1
-                print(f"✅ Generado {tipo} en carril {carril}, x={x_pos}")
-        
-        # ✅ ACTUALIZAR PARA PRÓXIMA GENERACIÓN
-        self.ultima_generacion_x = x_max
-        print(f"📦 Generados {obstaculos_generados} obstáculos")
-        print(f"📍 Próxima generación en X={self.ultima_generacion_x}")
+            # ✅ Próxima generación más espaciada
+            self.ultima_generacion_x = self.carro.x + 250  # ✅ Más espacio entre generaciones
+            print(f"📦 Generados {obstaculos_generados} obstáculos (modo equilibrado)")
 
     def guardar_partida_actual(self):
         """Guarda el estado actual en JSON"""
@@ -106,11 +104,11 @@ class JuegoModel:
             print(f"❌ Error guardando partida: {e}")
 
     def agregar_obstaculo(self, x, carril, tipo="normal", dano=10):
-        """Agrega obstáculo con verificación de superposición"""
+        """Agrega obstáculo con verificación de superposición - AJUSTADO"""
         try:
-            # ✅ VERIFICAR DISTANCIA MÍNIMA DEL CARRO
-            if x <= self.carro.x + 150:  # Mínimo 150px de distancia
-                x = self.carro.x + 200
+            # ✅ VERIFICAR DISTANCIA MÍNIMA DEL CARRO (ahora que empieza en x=0)
+            if x <= self.carro.x + 150:  # Mínimo 150px de distancia desde x=0
+                x = self.carro.x + 200  # Ajustar a 200px de distancia
                 print(f"🔧 Ajustando posición a X={x} por distancia mínima")
             
             # ✅ VERIFICAR SUPERPOSICIÓN CON OTROS OBSTÁCULOS
@@ -119,16 +117,16 @@ class JuegoModel:
                 if (abs(obstaculo_existente.x - x) < 150 and 
                     obstaculo_existente.carril == carril):
                     print(f"🚫 Obstáculo muy cerca en X={obstaculo_existente.x}, carril {carril}")
-                    return False  # No agregar este obstáculo
+                    return None
             
             obstaculo = Obstaculo(x, carril, tipo, dano)
             self.carretera.agregar_obstaculo(obstaculo)
             self.arbol_obstaculos.insertar(x, carril, tipo, dano, obstaculo)
             print(f"➕ Obstáculo agregado: {tipo} en X:{x}, Carril:{carril}")
-            return True
+            return obstaculo
         except Exception as e:
             print(f"❌ ERROR agregando obstáculo: {e}")
-            return False
+            return None
 
     def actualizar_obstaculos_visibles(self, x_min, x_max):
         """Actualiza obstáculos visibles"""
@@ -160,34 +158,32 @@ class JuegoModel:
                         break
 
     def update(self, screen_width=800):
-        """Ciclo de actualización - SIN movimiento de obstáculos"""
+        """Ciclo de actualización - CON generación fuera de pantalla"""
         if not self.en_ejecucion or self.terminado:
             return
 
-        # ✅ 1. SOLO EL CARRO AVANZA
-        self.carro.avanzar()  # Esto aumenta self.carro.x
+        # 1. El carro avanza
+        self.carro.avanzar()
 
-        # ✅ 2. Generar obstáculos dinámicos
-        self.generar_obstaculos_dinamicos()
+        # ✅ 2. Generar obstáculos DINÁMICOS fuera de pantalla
+        self.generar_obstaculos_dinamicos(screen_width)  # ✅ Pasar screen_width
 
-        # ✅ 3. Actualizar salto del carro
+        # 3. Actualizar salto del carro
         self.carro.actualizar_salto()
 
-        # ❌ 4. ¡NO MOVER OBSTÁCULOS! Eliminar cualquier código aquí
-
-        # ✅ 5. Actualizar obstáculos visibles
+        # 4. Actualizar obstáculos visibles
         x_min = max(0, self.carro.x - 100)
-        x_max = self.carro.x + screen_width + 200
+        x_max = self.carro.x + screen_width + 200  # ✅ Ver más allá de la pantalla
         self.actualizar_obstaculos_visibles(x_min, x_max)
 
-        # ✅ 6. Verificar colisiones
+        # 5. Verificar colisiones
         self.verificar_colisiones()
         
-        # ✅ 7. Debug para confirmar movimiento correcto
-        if self.carro.x % 100 == 0:
+        # 6. Debug
+        if self.carro.x % 500 == 0:
             print(f"🚗 Carro AVANZA: X={self.carro.x}")
             if self.carretera.obstaculos:
-                print(f"📍 Obstáculo FIJO: X={self.carretera.obstaculos[0].x}")
+                print(f"📍 Obstáculo más cercano: X={self.carretera.obstaculos[0].x}")
 
     def reiniciar(self):
         """Reinicia el juego"""
