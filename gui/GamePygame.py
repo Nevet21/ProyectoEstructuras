@@ -89,7 +89,6 @@ class GamePygame:
         conf = config.get("configuraciones", {})
         juego = JuegoModel(
             longitud=conf.get("distancia_total", 1000),
-            energia_inicial=conf.get("energia_inicial", 100),
             velocidad=conf.get("velocidad_avance", 5),
             altura_salto=conf.get("altura_salto", 10),   # 🟢 agregado
             intervalo=conf.get("tiempo_refresco_ms", 200) / 1000.0,

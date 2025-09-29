@@ -1,0 +1,306 @@
+{
+  "configuraciones": {
+    "distancia_total": 50,
+    "velocidad_avance": 10,
+    "altura_salto": 50,
+    "tiempo_refresco_ms": 200,
+    "color_carrito": "rojo"
+  },
+  "obstaculos": [
+    {
+      "x": 400,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 650,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 660,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 760,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 816,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 900,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 1166,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 1296,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1355,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1489,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 1530,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 1609,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 1645,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 1732,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 1732,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 1772,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 1875,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 1886,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 1986,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 2103,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2187,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2212,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 2214,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 2317,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2322,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2428,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 2434,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 2503,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2592,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 2664,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 2712,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2722,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 2859,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2897,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2955,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3076,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 3093,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 3234,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 3257,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 3349,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3379,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3510,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3510,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 3623,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3647,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3760,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 3788,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 3798,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3981,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 4007,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 4076,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 4089,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 4250,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 4272,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 4400,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 4569,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 4625,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 4728,
+      "carril": 1,
+      "tipo": "cono"
+    }
+  ],
+  "metadata": {
+    "fecha_actualizacion": "2025-09-28T23:28:32.649792",
+    "total_obstaculos": 58,
+    "posicion_actual": 3200
+  }
+}

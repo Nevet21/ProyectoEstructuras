@@ -1,7 +1,7 @@
 # models/Carro.py
 # models/Carro.py
 class Carro:
-    def __init__(self,  salto_altura, velocidad, ancho=50, alto=30, carril=1,):
+    def __init__(self,  velocidad, salto_altura, ancho=50, alto=30, carril=1,):
         self.x = 0  # Posición X inicial
         self.carril = carril
 

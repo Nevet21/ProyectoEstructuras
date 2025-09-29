@@ -1,0 +1,231 @@
+{
+  "configuraciones": {
+    "distancia_total": 50,
+    "velocidad_avance": 10,
+    "altura_salto": 50,
+    "tiempo_refresco_ms": 200,
+    "color_carrito": "rojo"
+  },
+  "obstaculos": [
+    {
+      "x": 400,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 566,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 650,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 750,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 900,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1057,
+      "carril": 1,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1095,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1187,
+      "carril": 2,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1419,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 1519,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 1560,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1718,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 1773,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1810,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1865,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 1939,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 2022,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2096,
+      "carril": 0,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2148,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2224,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2275,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 2321,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 2386,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2434,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 2528,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2595,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 2641,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 2743,
+      "carril": 0,
+      "tipo": "cono"
+    },
+    {
+      "x": 2859,
+      "carril": 2,
+      "tipo": "roca"
+    },
+    {
+      "x": 2885,
+      "carril": 1,
+      "tipo": "roca"
+    },
+    {
+      "x": 3013,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3032,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 3043,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3216,
+      "carril": 0,
+      "tipo": "roca"
+    },
+    {
+      "x": 3376,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3491,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3676,
+      "carril": 2,
+      "tipo": "cono"
+    },
+    {
+      "x": 3680,
+      "carril": 1,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3744,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3869,
+      "carril": 0,
+      "tipo": "hueco"
+    },
+    {
+      "x": 3904,
+      "carril": 2,
+      "tipo": "aceite"
+    },
+    {
+      "x": 3946,
+      "carril": 1,
+      "tipo": "cono"
+    },
+    {
+      "x": 4156,
+      "carril": 2,
+      "tipo": "roca"
+    }
+  ],
+  "metadata": {
+    "fecha_actualizacion": "2025-09-28T23:26:21.649894",
+    "total_obstaculos": 43,
+    "posicion_actual": 2550
+  }
+}
