@@ -21,8 +21,8 @@ class ArbolLayoutManager:
         self.tiempo_ultimo = 0
         self.intervalo_ms = 500  # medio segundo entre nodos
         
-        self.font_nodo = pygame.font.SysFont("Arial", 16, bold=True)
-        self.font_altura = pygame.font.SysFont("Arial", 12)
+        self.font_nodo = pygame.font.SysFont("Arial", 9, bold=True)
+        self.font_altura = pygame.font.SysFont("Arial", 9)
         
     def recorrido_inorden(self, nodo):
         if not nodo:

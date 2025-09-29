@@ -9,8 +9,6 @@ class NodoAVL:
         self.izquierda = None
         self.derecha = None
         self.altura = 1
-        
-        
 
     def __str__(self):
         return f"Nodo({self.x},{self.y})"
@@ -181,3 +179,93 @@ class ArbolAVL:
             self._obtener_todos(nodo.izquierda, resultados)
             resultados.append(nodo.obstaculo)
             self._obtener_todos(nodo.derecha, resultados)
+
+    def eliminar(self, x, y):
+        self.raiz = self._eliminar(self.raiz, x, y)
+    
+    def _eliminar(self, nodo, x, y):
+        if not nodo:
+            return nodo
+        
+        # Buscar el nodo a eliminar
+        if x < nodo.x or (x == nodo.x and y < nodo.y):
+            nodo.izquierda = self._eliminar(nodo.izquierda, x, y)
+        elif x > nodo.x or (x == nodo.x and y > nodo.y):
+            nodo.derecha = self._eliminar(nodo.derecha, x, y)
+        else:
+            # Nodo encontrado
+            if not nodo.izquierda:
+                return nodo.derecha
+            elif not nodo.derecha:
+                return nodo.izquierda
+            
+            # Nodo con dos hijos
+            temp = self._min_valor_nodo(nodo.derecha)
+            nodo.x = temp.x
+            nodo.y = temp.y
+            nodo.tipo = temp.tipo
+            nodo.dano = temp.dano
+            nodo.obstaculo = temp.obstaculo
+            nodo.derecha = self._eliminar(nodo.derecha, temp.x, temp.y)
+        
+        if not nodo:
+            return nodo
+        
+        # Actualizar altura
+        nodo.altura = 1 + max(self.altura(nodo.izquierda),
+                             self.altura(nodo.derecha))
+        
+        # Balancear
+        balance = self.balance(nodo)
+        
+        # Rotaciones
+        if balance > 1:
+            if self.balance(nodo.izquierda) >= 0:
+                return self.rotacion_derecha(nodo)
+            else:
+                nodo.izquierda = self.rotacion_izquierda(nodo.izquierda)
+                return self.rotacion_derecha(nodo)
+        
+        if balance < -1:
+            if self.balance(nodo.derecha) <= 0:
+                return self.rotacion_izquierda(nodo)
+            else:
+                nodo.derecha = self.rotacion_derecha(nodo.derecha)
+                return self.rotacion_izquierda(nodo)
+        
+        return nodo
+    
+    def _min_valor_nodo(self, nodo):
+        actual = nodo
+        while actual.izquierda:
+            actual = actual.izquierda
+        return actual
+    
+    # NUEVO: Método para obtener todos los nodos
+    def obtener_todos_nodos(self):
+        """Devuelve una lista con todos los nodos del árbol"""
+        nodos = []
+        self._inorden_nodos(self.raiz, nodos)
+        return nodos
+    
+    def _inorden_nodos(self, nodo, nodos):
+        if nodo:
+            self._inorden_nodos(nodo.izquierda, nodos)
+            nodos.append(nodo)
+            self._inorden_nodos(nodo.derecha, nodos)
+    
+    # NUEVO: Método para buscar nodo por coordenadas
+    def buscar_nodo(self, x, y):
+        return self._buscar_nodo(self.raiz, x, y)
+    
+    def _buscar_nodo(self, nodo, x, y):
+        if not nodo:
+            return None
+        
+        if x == nodo.x and y == nodo.y:
+            return nodo
+        
+        if x < nodo.x or (x == nodo.x and y < nodo.y):
+            return self._buscar_nodo(nodo.izquierda, x, y)
+        else:
+            return self._buscar_nodo(nodo.derecha, x, y)
