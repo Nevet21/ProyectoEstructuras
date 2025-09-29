@@ -1,5 +1,5 @@
 class Carretera:
-    def __init__(self, longitud=100):
+    def __init__(self, longitud):
         """
         longitud: distancia total de la carretera en 'unidades' (metros simulados)
         """

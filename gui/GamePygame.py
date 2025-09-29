@@ -17,6 +17,7 @@ from gui.ArbolLayout import ArbolLayoutManager
 from gui.MenuEliminar import MenuEliminar
 
 
+
 class GamePygame:
     def __init__(self, width=1000, height=600):
         pygame.init()
@@ -40,6 +41,7 @@ class GamePygame:
         self.gui_manager = GUIManager(self.GAME_WIDTH, self.HEIGHT)
         self.gui_arbol = GUIArbolAVL(self.TREE_WIDTH, self.HEIGHT)
         self.layout_manager = ArbolLayoutManager(self.TREE_WIDTH, self.HEIGHT)
+   
 
         # Estado del juego
         self.running = True
@@ -89,11 +91,11 @@ class GamePygame:
             longitud=conf.get("distancia_total", 1000),
             energia_inicial=conf.get("energia_inicial", 100),
             velocidad=conf.get("velocidad_avance", 5),
+            altura_salto=conf.get("altura_salto", 10),   # 🟢 agregado
             intervalo=conf.get("tiempo_refresco_ms", 200) / 1000.0,
             config_json=config
         )
         return juego
-
     # ------------------ Worker del árbol (thread) ---------------
     def _arbol_worker(self):
         while self.running:
@@ -239,7 +241,28 @@ class GamePygame:
                             print("⏸️ Juego pausado - Modo gestión del árbol activado")
                     continue
 
-                # Resto de teclas del juego (solo si no está en modo gestión)
+                # =====================================
+                # Recorridos disponibles SIEMPRE
+                # =====================================
+                if event.key in (pygame.K_i, pygame.K_p, pygame.K_o, pygame.K_b):
+                    with self.arbol_lock:
+                        arbol = getattr(self.juego, "arbol_obstaculos", None)
+                        raiz = getattr(arbol, "raiz", None) if arbol is not None else None
+                        if raiz:
+                            if event.key == pygame.K_i:
+                                self.layout_manager.iniciar_recorrido("inorden", raiz)
+                            elif event.key == pygame.K_p:
+                                self.layout_manager.iniciar_recorrido("preorden", raiz)
+                            elif event.key == pygame.K_o:
+                                self.layout_manager.iniciar_recorrido("postorden", raiz)
+                            elif event.key == pygame.K_b:
+                                self.layout_manager.iniciar_recorrido("anchura", raiz)
+                        else:
+                            print("ℹ️ No hay raíz del árbol para recorrer.")
+
+                # =====================================
+                # Resto de controles SOLO si no está en gestión
+                # =====================================
                 if not self.mostrar_gestion_arbol and self.juego.en_ejecucion:
                     if event.key == pygame.K_g:
                         self.generar_obstaculos_dinamicos()
@@ -256,21 +279,6 @@ class GamePygame:
                         self.juego.carro.mover_abajo()
                     elif event.key == pygame.K_SPACE:
                         self.juego.carro.saltar()
-                    elif event.key in (pygame.K_i, pygame.K_p, pygame.K_o, pygame.K_b):
-                        with self.arbol_lock:
-                            arbol = getattr(self.juego, "arbol_obstaculos", None)
-                            raiz = getattr(arbol, "raiz", None) if arbol is not None else None
-                            if raiz:
-                                if event.key == pygame.K_i:
-                                    self.layout_manager.iniciar_recorrido("inorden", raiz)
-                                elif event.key == pygame.K_p:
-                                    self.layout_manager.iniciar_recorrido("preorden", raiz)
-                                elif event.key == pygame.K_o:
-                                    self.layout_manager.iniciar_recorrido("postorden", raiz)
-                                elif event.key == pygame.K_b:
-                                    self.layout_manager.iniciar_recorrido("anchura", raiz)
-                            else:
-                                print("ℹ️ No hay raíz del árbol para recorrer.")
 
             # ========== MODO GESTIÓN DEL ÁRBOL (cuando está activo) ==========
             if self.mostrar_gestion_arbol:
@@ -542,13 +550,17 @@ class GamePygame:
                 self.dibujar()
                 pygame.display.flip()
                 self.clock.tick(30)
+                
+            
         finally:
+            self.juego.guardar_partida_actual()
             self.running = False
             try:
                 self.tree_queue.put(("stop", None))
             except Exception:
                 pass
             pygame.quit()
+            
 
 if __name__ == "__main__":
     juego = GamePygame()

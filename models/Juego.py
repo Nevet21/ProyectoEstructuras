@@ -7,13 +7,15 @@ from models.Obstaculo import Obstaculo
 from models.ArbolAVL import ArbolAVL
 
 class JuegoModel:
-    def __init__(self, longitud, energia_inicial, velocidad, intervalo, config_json):
-        self.carro = Carro(velocidad=velocidad)
+    def __init__(self, longitud, energia_inicial, velocidad,altura_salto, intervalo, config_json):
+        self.carro = Carro(velocidad, altura_salto)
         self.carretera = Carretera(longitud)
         self.energia = energia_inicial
         self.energia_maxima = energia_inicial
         self.terminado = False
-
+        self.altura_salto = altura_salto
+        
+        
         # Árbol AVL para obstáculos
         self.arbol_obstaculos = ArbolAVL()
         self.obstaculos_visibles = []
