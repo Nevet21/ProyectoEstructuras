@@ -207,7 +207,7 @@ class JuegoModel:
 
     def reiniciar(self):
         """Reinicia el juego"""
-        self.carro = Carro()
+        self.carro = Carro(self.velocidad, self.altura_salto)
         self.carretera.obstaculos.clear()
         self.arbol_obstaculos = ArbolAVL()
         self.obstaculos_visibles.clear()

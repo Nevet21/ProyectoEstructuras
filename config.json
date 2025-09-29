@@ -1,8 +1,8 @@
 {
   "configuraciones": {
     "distancia_total": 50,
-    "velocidad_avance": 10,
-    "altura_salto": 70,
+    "velocidad_avance": 8,
+    "altura_salto": 100,
     "tiempo_refresco_ms": 200,
     "color_carrito": "rojo"
   }
