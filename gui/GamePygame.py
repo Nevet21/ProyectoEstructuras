@@ -360,7 +360,11 @@ class GamePygame:
                                 x = max(0, int(x))
                                 y = max(0, min(2, int(y)))
                                 tipo = random.choice(["cono", "roca", "aceite", "hueco"])
-                                nuevo = self.juego.agregar_obstaculo(x, y, tipo)
+                                # ✅ Usar el método de inserción sin restricciones
+                                if hasattr(self.juego, 'agregar_obstaculo_modo_gestion'):
+                                    nuevo = self.juego.agregar_obstaculo_modo_gestion(x, y, tipo)
+                                else:
+                                    nuevo = self.juego.agregar_obstaculo(x, y, tipo)
                                 if nuevo:
                                     print(f"✅ Nodo insertado por click: ({x},{y}) - {tipo}")
                                     self.gui_arbol.desactivar_modos()
@@ -406,6 +410,14 @@ class GamePygame:
 
             if self.input_mode == "insert":
                 tipo = random.choice(["cono", "roca", "aceite", "hueco"])
+                if hasattr(self.juego, 'agregar_obstaculo_modo_gestion'):
+                    nuevo = self.juego.agregar_obstaculo_modo_gestion(x, carril, tipo)
+                else:
+                    nuevo = self.juego.agregar_obstaculo(x, carril, tipo)
+                if nuevo:
+                    print(f"✅ Insertado (overlay): ({x},{carril}) tipo {tipo}")
+                else:
+                    print(f"❌ No se pudo insertar en ({x},{carril})")
                 nuevo = self.juego.agregar_obstaculo(x, carril, tipo)
                 if nuevo:
                     print(f"✅ Insertado (overlay): ({x},{carril}) tipo {tipo}")
