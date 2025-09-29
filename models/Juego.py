@@ -106,21 +106,30 @@ class JuegoModel:
             print(f"❌ Error guardando partida: {e}")
 
     def agregar_obstaculo(self, x, carril, tipo="normal", dano=10):
-        """Agrega obstáculo con verificación de superposición - AJUSTADO"""
+        """Agrega obstáculo - VERSIÓN MODIFICADA para permitir inserción en cualquier posición"""
         try:
-            # ✅ VERIFICAR DISTANCIA MÍNIMA DEL CARRO (ahora que empieza en x=0)
-            if x <= self.carro.x + 150:  # Mínimo 150px de distancia desde x=0
-                x = self.carro.x + 200  # Ajustar a 200px de distancia
-                print(f"🔧 Ajustando posición a X={x} por distancia mínima")
+            # ✅ ELIMINAR restricción de distancia mínima del carro para modo gestión
+            # Solo aplicar esta restricción durante el juego normal, no en modo gestión
+            if self.en_ejecucion and not self.terminado:
+                if x <= self.carro.x + 150:  # Mínimo 150px de distancia durante juego activo
+                    x = self.carro.x + 200  # Ajustar a 200px de distancia
+                    print(f"🔧 Ajustando posición a X={x} por distancia mínima durante juego")
             
-            # ✅ VERIFICAR SUPERPOSICIÓN CON OTROS OBSTÁCULOS
+            # ✅ VERIFICAR SUPERPOSICIÓN CON OTROS OBSTÁCULOS (mantener esta verificación)
             for obstaculo_existente in self.carretera.obstaculos:
-                # Evitar obstáculos en la misma zona (±100px)
-                if (abs(obstaculo_existente.x - x) < 150 and 
-                    obstaculo_existente.carril == carril):
-                    print(f"🚫 Obstáculo muy cerca en X={obstaculo_existente.x}, carril {carril}")
+                # Evitar obstáculos en la misma posición exacta
+                if obstaculo_existente.x == x and obstaculo_existente.carril == carril:
+                    print(f"🚫 Ya existe un obstáculo en X={x}, carril {carril}")
                     return None
-            
+                
+                # ✅ RELAJAR la restricción de distancia entre obstáculos para modo gestión
+                # Solo verificar superposición muy cercana durante juego activo
+                if self.en_ejecucion and not self.terminado:
+                    if (abs(obstaculo_existente.x - x) < 100 and 
+                        obstaculo_existente.carril == carril):
+                        print(f"🚫 Obstáculo muy cerca en X={obstaculo_existente.x}, carril {carril}")
+                        return None
+
             obstaculo = Obstaculo(x, carril, tipo, dano)
             self.carretera.agregar_obstaculo(obstaculo)
             self.arbol_obstaculos.insertar(x, carril, tipo, dano, obstaculo)
